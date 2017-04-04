@@ -32,7 +32,7 @@ private:
   ttLibC_ContainerReader *reader_;
   Nan::Persistent<Object> jsVideoFrame_;
   Nan::Persistent<Object> jsAudioFrame_;
-  Local<Value> callback_;
+  Local<Value>            callback_;
 };
 
 #endif

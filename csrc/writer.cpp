@@ -183,10 +183,10 @@ bool Writer::writeCallback(
     void *data,
     size_t data_size) {
   // あとはこのデータをcallbackで応答すればよい。
-  Writer *writer = (Writer *)ptr;
-  auto callback = new Nan::Callback(writer->callback_.As<Function>());
-  Local<Object> binary = Nan::CopyBuffer((char *)data, data_size).ToLocalChecked();
-  Local<Value> args[] = {
+  Writer       *writer   = (Writer *)ptr;
+  auto          callback = new Nan::Callback(writer->callback_.As<Function>());
+  Local<Object> binary   = Nan::CopyBuffer((char *)data, data_size).ToLocalChecked();
+  Local<Value>  args[]   = {
     Nan::Null(),
     binary
   };

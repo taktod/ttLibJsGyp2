@@ -36,13 +36,13 @@ NAN_METHOD(Reader::New) {
 
 NAN_METHOD(Reader::ReadFrame) {
   if(info.Length() == 2) {
-    Local<Value> binary = info[0];
+    Local<Value> binary   = info[0];
     Local<Value> callback = info[1];
     if(binary->IsUint8Array()
     || binary->IsArrayBuffer()) {
-      void *data = (void *)node::Buffer::Data(binary->ToObject());
-      size_t data_size = node::Buffer::Length(binary->ToObject());
-      Reader *reader = Nan::ObjectWrap::Unwrap<Reader>(info.Holder());
+      void   *data      = (void *)node::Buffer::Data(binary->ToObject());
+      size_t  data_size = node::Buffer::Length(binary->ToObject());
+      Reader *reader    = Nan::ObjectWrap::Unwrap<Reader>(info.Holder());
       if(reader == NULL || reader->reader_ == NULL) {
         puts("readerがありません。");
         info.GetReturnValue().Set(false);
@@ -105,7 +105,7 @@ NAN_METHOD(Reader::ReadFrame) {
 
 Reader::Reader(Nan::NAN_METHOD_ARGS_TYPE info) {
   String::Utf8Value type(info[0]->ToString());
-  if(strcmp((const char *)*type, "flv") == 0) {
+  if(     strcmp((const char *)*type, "flv") == 0) {
     reader_ = (ttLibC_ContainerReader *)ttLibC_FlvReader_make();
   }
   else if(strcmp((const char *)*type, "mkv") == 0) {
@@ -136,8 +136,8 @@ Reader::~Reader() {
 bool Reader::frameCallback(
     void *ptr,
     ttLibC_Frame *ttFrame) {
-  Reader *reader = (Reader *)ptr;
-  auto callback = new Nan::Callback(reader->callback_.As<Function>());
+  Reader       *reader   = (Reader *)ptr;
+  auto          callback = new Nan::Callback(reader->callback_.As<Function>());
   Local<Object> jsFrame;
   if(ttLibC_Frame_isAudio(ttFrame)) {
     jsFrame = Nan::New(reader->jsAudioFrame_);

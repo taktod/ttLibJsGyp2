@@ -9,6 +9,7 @@
       "csrc/frame.cpp",
       "csrc/reader.cpp",
       "csrc/writer.cpp",
+      "csrc/decoder.cpp",
 
       "ttLibC/ttLibC/ttLibC.c",
       "ttLibC/ttLibC/allocator.c",

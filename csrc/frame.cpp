@@ -19,7 +19,10 @@ void Frame::classInit(Local<Object> target) {
 }
 
 Local<Object> Frame::newInstance() {
-  return Nan::NewInstance(Nan::New(constructor()), 0, NULL).ToLocalChecked();
+  return Nan::NewInstance(
+    Nan::New(constructor()),
+    0,
+    NULL).ToLocalChecked();
 }
 
 bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
@@ -50,11 +53,11 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
     Nan::Set(jsFrame, Nan::New("pts").ToLocalChecked(), Nan::New((double)ttFrame->pts));
   }
   Nan::Set(jsFrame, Nan::New("timebase").ToLocalChecked(), Nan::New(ttFrame->timebase));
-  Nan::Set(jsFrame, Nan::New("id").ToLocalChecked(), Nan::New(ttFrame->id));
+  Nan::Set(jsFrame, Nan::New("id").ToLocalChecked(),       Nan::New(ttFrame->id));
   if(ttLibC_Frame_isAudio(ttFrame)) {
     ttLibC_Audio *audio = (ttLibC_Audio *)ttFrame;
     Nan::Set(jsFrame, Nan::New("sampleRate").ToLocalChecked(), Nan::New(audio->sample_rate));
-    Nan::Set(jsFrame, Nan::New("sampleNum").ToLocalChecked(), Nan::New(audio->sample_num));
+    Nan::Set(jsFrame, Nan::New("sampleNum").ToLocalChecked(),  Nan::New(audio->sample_num));
     Nan::Set(jsFrame, Nan::New("channelNum").ToLocalChecked(), Nan::New(audio->channel_num));
     switch(ttFrame->type) {
     case frameType_aac:
@@ -97,7 +100,7 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
   }
   else if(ttLibC_Frame_isVideo(ttFrame)) {
     ttLibC_Video *video = (ttLibC_Video *)ttFrame;
-    Nan::Set(jsFrame, Nan::New("width").ToLocalChecked(), Nan::New(video->width));
+    Nan::Set(jsFrame, Nan::New("width").ToLocalChecked(),  Nan::New(video->width));
     Nan::Set(jsFrame, Nan::New("height").ToLocalChecked(), Nan::New(video->height));
     switch(video->type) {
     case videoType_key:
@@ -168,7 +171,7 @@ ttLibC_Frame_Type Frame::getFrameType(const char *name) {
   int nameLength = strlen(name);
   switch(nameLength) {
   case 3:
-    if(strcmp(name, "aac") == 0) {
+    if(     strcmp(name, "aac") == 0) {
       return frameType_aac;
     }
     else if(strcmp(name, "mp3") == 0) {
@@ -191,7 +194,7 @@ ttLibC_Frame_Type Frame::getFrameType(const char *name) {
     }
     break;
   case 4:
-    if(strcmp(name, "opus") == 0) {
+    if(     strcmp(name, "opus") == 0) {
       return frameType_opus;
     }
     else if(strcmp(name, "flv1") == 0) {
@@ -219,7 +222,7 @@ ttLibC_Frame_Type Frame::getFrameType(const char *name) {
     }
     break;
   case 6:
-    if(strcmp(name, "pcmF32") == 0) {
+    if(     strcmp(name, "pcmF32") == 0) {
       return frameType_pcmF32;
     }
     else if(strcmp(name, "pcmS16") == 0) {
