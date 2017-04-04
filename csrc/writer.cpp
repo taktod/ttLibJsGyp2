@@ -19,8 +19,6 @@ void Writer::classInit(Local<Object> target) {
 
 NAN_METHOD(Writer::New) {
   if(info.IsConstructCall()) {
-    // パラメーターがおかしかったら例外を投げたいところ
-    String::Utf8Value type(info[0]->ToString());
     Writer *writer = new Writer(info);
     writer->Wrap(info.This());
     info.GetReturnValue().Set(info.This());

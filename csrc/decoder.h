@@ -20,7 +20,7 @@ typedef enum gypDecoderType_e {
 
 typedef struct gypDecoder_t {
   void *decoder;
-  gdtDecoderType_e type;
+  gypDecoderType_e type;
 //  ttLibC_Frame *frame; // これ必要かな？
 //  frame_t inputFrame; // これも必要かね？
 } gypDecoder_t;
@@ -30,7 +30,7 @@ public:
   static void classInit(Local<Object> target);
 private:
   static NAN_METHOD(New);
-  static NAN_METHOD(DecodeFrame);
+  static NAN_METHOD(Decode);
   static NAN_METHOD(SetCodecControl);
 
   static inline Nan::Persistent<Function> & constructor() {
