@@ -1,0 +1,21 @@
+{
+  "name": "ttlibjsgyp2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "rebuild": "node-gyp rebuild",
+    "build": "node-gyp build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.2.1",
+    "nan": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.12",
+    "node-gyp": "^3.6.0"
+  }
+}

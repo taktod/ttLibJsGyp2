@@ -1,0 +1,11 @@
+# ttLibJsGyp2
+
+前回つくったttLibJsGypの場合は、ttLibCのプログラムを別でインストールして扱っていた。
+またframeのデータをbinaryデータとして扱っていた。
+さらにそれぞれの動作が独立したsharedLibraryとして出力していたので、コンパイルも遅かった。
+
+今回の動作では、submoduleとしてttLibCを取り込んでしまうことにする。
+これでwindowsでも簡単に扱えるようにしておきたい。
+また、frameのデータはinstanceでwrapすることでbinaryを介在せずに動作させることで高速化を目指したい。
+１つのsharedLibraryですべての動作を賄う形にしておく。
+
