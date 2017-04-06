@@ -43,5 +43,10 @@ module.exports = {
     AvcodecAudioDecoder: function(type, sampleRate, channelNum) {
       return ttLibJsGyp.Decoder.apply(null, ["avcodec", {type: type, sampleRate: sampleRate, channelNum: channelNum}]);
     }
+  },
+  encoder: {
+    Openh264Encoder: function(width, height, param, spatialParamArray) {
+      return ttLibJsGyp.Encoder.apply(null, ["openh264", {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
+    }
   }
 };

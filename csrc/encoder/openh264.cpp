@@ -1,10 +1,53 @@
 #include "openh264.h"
 #include "../frame.h"
 #include <ttLibC/encoder/openh264Encoder.h>
+#include <wels/codec_api.h>
+
+#ifdef __ENABLE_OPENH264__
+#endif
 
 Openh264Encoder::Openh264Encoder(Local<Object> params) : Encoder() {
   type_ = get_openh264;
+  uint32_t width  = Nan::Get(params, Nan::New("width").ToLocalChecked()).ToLocalChecked()->Uint32Value();
+  uint32_t height = Nan::Get(params, Nan::New("height").ToLocalChecked()).ToLocalChecked()->Uint32Value();
+  Local<Object> param = Nan::Get(params, Nan::New("param").ToLocalChecked()).ToLocalChecked()->ToObject();
+  Local<Array> spatialParamArray = Local<Array>::Cast(Nan::Get(params, Nan::New("spatialParamArray").ToLocalChecked()).ToLocalChecked());
+  if(width == 0 || height == 0) {
+    puts("縦横入力パラメーターが不正です。");
+    return;
+  }
+  SEncParamExt paramExt;
   // width height params spatialParamsArrayが必要
+  ttLibC_Openh264Encoder_getDefaultSEncParamExt(&paramExt, width, height);
+  {
+    Local<Array> keys = param->GetPropertyNames();
+    for(int i = 0, max = keys->Length();i < max;++ i) {
+      String::Utf8Value key(keys->Get(i)->ToString());
+      String::Utf8Value value(Nan::Get(param, Nan::New(*key).ToLocalChecked()).ToLocalChecked()->ToString());
+      // あとはデータにアクセスして処理すればよい。
+      bool result = ttLibC_Openh264Encoder_paramParse(&paramExt, *key, *value);
+      if(!result) {
+        printf("%s %s:パラメーター設定失敗しました。\n", *key, *value);
+      }
+    }
+  }
+  int num = spatialParamArray->Length();
+  if(num > 4) {
+    num = 4;
+  }
+  for(int i = 0;i < num;++ i) {
+    Local<Object> spatialParam = spatialParamArray->Get(i)->ToObject();
+    Local<Array> keys = spatialParam->GetPropertyNames();
+    for(int j = 0, max = keys->Length();j < max;++ j) {
+      String::Utf8Value key(keys->Get(j)->ToString());
+      String::Utf8Value value(Nan::Get(spatialParam, Nan::New(*key).ToLocalChecked()).ToLocalChecked()->ToString());
+      bool result = ttLibC_Openh264Encoder_spatialParamParse(&paramExt, i, *key, *value);
+      if(!result) {
+        printf("%s %s:パラメーター設定失敗しました。\n", *key, *value);
+      }
+    }
+  }
+  encoder_ = (void *)ttLibC_Openh264Encoder_makeWithSEncParamExt(&paramExt);
 }
 
 Openh264Encoder::~Openh264Encoder() {
@@ -13,7 +56,23 @@ Openh264Encoder::~Openh264Encoder() {
 
 bool Openh264Encoder::encodeCallback(void *ptr, ttLibC_H264 *h264) {
   puts("encodeできました。");
-  return true;
+  // あとはつくっていくだけ
+  Openh264Encoder *encoder = (Openh264Encoder *)ptr;
+  auto callback = new Nan::Callback(encoder->callback_.As<Function>());
+  Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
+  Frame::setFrame(jsFrame, (ttLibC_Frame *)h264);
+  Local<Value> args[] = {
+    Nan::Null(),
+    jsFrame
+  };
+  Local<Value> result = callback->Call(2, args);
+  if(result->IsTrue()) {
+    return true;
+  }
+  if(result->IsUndefined()) {
+    puts("応答が設定されていません。");
+  }
+  return false;
 }
 
 bool Openh264Encoder::encode(ttLibC_Frame *frame) {

@@ -46,18 +46,33 @@ readableStream.on("data", (data) => {
 // */
 
 var videoDecoder = new tt.decoder.AvcodecVideoDecoder("h264", 640, 360);
+var openh264Encoder = new tt.encoder.Openh264Encoder(
+  640,
+  360,
+  {},[]
+/*  {
+    "iMinQp": 4,
+    "iMaxQp": 51,
+    "iTargetBitrate": 300000,
+    "iMaxBitrate": 310000,
+  },
+  [
+    {
+      "iSpatialBitrate": 300000,
+      "iMaxSpatialBitrate": 310000,
+      "sSliceArgument.uiSliceMode": "SM_SINGLE_SLICE"
+    }
+  ]*/
+  );
+
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
     if(frame.type == "h264") {
       return videoDecoder.decode(frame, (err, frame) => {
-//        console.log(frame);
-        return true;
-      });
-    }
-    else if(frame.type == "aac") {
-      return audioDecoder.decode(frame, (err, frame) => {
-//        console.log(frame);
-        return true;
+        return openh264Encoder.encode(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        });
       });
     }
     else {

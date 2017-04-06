@@ -15,17 +15,30 @@
     "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)"
   },
   "targets": [{
-    "conditions":[[
-      'libavcodec=="yes"', {
-        "defines": ["__ENABLE_AVCODEC__"],
-        "libraries": [
-          '<!@(pkg-config --libs libavcodec)'
-        ],
-        "include_dirs": [
-          "<!@(pkg-config --cflags-only-I libavcodec | sed -e 's/\-I//g')>"
-        ]
-      }
-    ]],
+    "conditions":[
+      [
+        'libavcodec=="yes"', {
+          "defines": ["__ENABLE_AVCODEC__"],
+          "libraries": [
+            '<!@(pkg-config --libs libavcodec)'
+          ],
+          "include_dirs": [
+            "<!@(pkg-config --cflags-only-I libavcodec | sed -e 's/\-I//g')"
+          ]
+        }
+      ],
+      [
+        'openh264=="yes"', {
+          "defines": ["__ENABLE_OPENH264__"],
+          "libraries": [
+            '<!@(pkg-config --libs openh264)'
+          ],
+          "include_dirs": [
+            "<!@(pkg-config --cflags-only-I openh264 | sed -e 's/\-I//g')"
+          ]
+        }
+      ]
+    ],
     "target_name": "ttLibJsGyp",
     "sources": [
       "csrc/ttLibJsGyp.cpp",
@@ -70,6 +83,7 @@
       "ttLibC/ttLibC/container/mpegts2/type/pmt.c",
       "ttLibC/ttLibC/container/mpegts2/type/sdt.c",
       "ttLibC/ttLibC/decoder/avcodecDecoder.c",
+      "ttLibC/ttLibC/encoder/openh264Encoder.cpp",
       "ttLibC/ttLibC/frame/frame.c",
       "ttLibC/ttLibC/frame/audio/aac.c",
       "ttLibC/ttLibC/frame/audio/adpcmImaWav.c",
@@ -110,7 +124,8 @@
     "include_dirs": [
       "<!(node -e \"require('nan')\")",
       "ttLibC/",
-      "./"
+      "./",
+      "/usr/local/lib"
     ]
   }]
 }

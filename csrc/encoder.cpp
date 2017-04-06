@@ -80,7 +80,22 @@ NAN_METHOD(Encoder::New) {
 }
 
 NAN_METHOD(Encoder::Encode) {
-
+  // ここつくってないからこうなるのか・・・
+  if(info.Length() == 2) {
+    Local<Value> jsFrame = info[0];
+    Local<Value> callback = info[1];
+    Encoder *encoder = Nan::ObjectWrap::Unwrap<Encoder>(info.Holder());
+    if(encoder == NULL) {
+      puts("encoderがありません。");
+      info.GetReturnValue().Set(false);
+      return;
+    }
+    encoder->callback_ = callback;
+    info.GetReturnValue().Set(
+      encoder->encode(Frame::refFrame(jsFrame->ToObject()))
+    );
+    return;
+  }
 }
 
 NAN_METHOD(Encoder::ForceNextFrameType) {

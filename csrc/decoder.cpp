@@ -78,7 +78,9 @@ NAN_METHOD(Decoder::Decode) {
       return;
     }
     decoder->callback_ = callback;
-    info.GetReturnValue().Set(decoder->decode(Frame::refFrame(jsFrame->ToObject())));
+    info.GetReturnValue().Set(
+      decoder->decode(Frame::refFrame(jsFrame->ToObject()))
+    );
     return;
   }
   info.GetReturnValue().Set(false);

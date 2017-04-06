@@ -5,12 +5,14 @@ using namespace v8;
 #include "reader.h"
 #include "writer.h"
 #include "decoder.h"
+#include "encoder.h"
 #include "frame.h"
 
 static NAN_MODULE_INIT(Init) {
   Reader::classInit(target);
   Writer::classInit(target);
   Decoder::classInit(target);
+  Encoder::classInit(target);
   Frame::classInit(target);
 }
 
