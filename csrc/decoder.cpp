@@ -91,6 +91,5 @@ NAN_METHOD(Decoder::SetCodecControl) {
 }
 
 Decoder::Decoder() {
-  decoder_ = NULL;
   jsFrame_.Reset(Frame::newInstance());
 }

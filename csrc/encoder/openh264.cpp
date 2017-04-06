@@ -47,11 +47,11 @@ Openh264Encoder::Openh264Encoder(Local<Object> params) : Encoder() {
       }
     }
   }
-  encoder_ = (void *)ttLibC_Openh264Encoder_makeWithSEncParamExt(&paramExt);
+  encoder_ = ttLibC_Openh264Encoder_makeWithSEncParamExt(&paramExt);
 }
 
 Openh264Encoder::~Openh264Encoder() {
-  ttLibC_Openh264Encoder_close((ttLibC_Openh264Encoder **)&encoder_);
+  ttLibC_Openh264Encoder_close(&encoder_);
 }
 
 bool Openh264Encoder::encodeCallback(void *ptr, ttLibC_H264 *h264) {
@@ -84,7 +84,7 @@ bool Openh264Encoder::encode(ttLibC_Frame *frame) {
     return false;
   }
   return ttLibC_Openh264Encoder_encode(
-    (ttLibC_Openh264Encoder *)encoder_,
+    encoder_,
     (ttLibC_Yuv420 *)frame,
     encodeCallback,
     this);

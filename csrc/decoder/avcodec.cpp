@@ -1,6 +1,5 @@
 #include "avcodec.h"
 #include "../frame.h"
-#include <ttLibC/decoder/avcodecDecoder.h>
 
 AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {
   type_ = gdt_avcodec;
@@ -12,14 +11,14 @@ AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {
     {
       Local<Value> width  = Nan::Get(params, Nan::New("width").ToLocalChecked()).ToLocalChecked();
       Local<Value> height = Nan::Get(params, Nan::New("height").ToLocalChecked()).ToLocalChecked();
-      decoder_ = (void *)ttLibC_AvcodecVideoDecoder_make(frameType, width->Uint32Value(), height->Uint32Value());
+      decoder_ = ttLibC_AvcodecVideoDecoder_make(frameType, width->Uint32Value(), height->Uint32Value());
     }
     break;
   case frameType_aac:
     {
       Local<Value> sampleRate = Nan::Get(params, Nan::New("sampleRate").ToLocalChecked()).ToLocalChecked();
       Local<Value> channelNum = Nan::Get(params, Nan::New("channelNum").ToLocalChecked()).ToLocalChecked();
-      decoder_ = (void *)ttLibC_AvcodecAudioDecoder_make(frameType, sampleRate->Uint32Value(), channelNum->Uint32Value());
+      decoder_ = ttLibC_AvcodecAudioDecoder_make(frameType, sampleRate->Uint32Value(), channelNum->Uint32Value());
     }
     break;
   default:
@@ -28,7 +27,7 @@ AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {
 }
 
 AvcodecDecoder::~AvcodecDecoder() {
-  ttLibC_AvcodecDecoder_close((ttLibC_AvcodecDecoder **)&decoder_);
+  ttLibC_AvcodecDecoder_close(&decoder_);
 }
 
 bool AvcodecDecoder::decodeCallback(void *ptr, ttLibC_Frame *ttFrame) {
@@ -52,7 +51,7 @@ bool AvcodecDecoder::decodeCallback(void *ptr, ttLibC_Frame *ttFrame) {
 
 bool AvcodecDecoder::decode(ttLibC_Frame *frame) {
   return ttLibC_AvcodecDecoder_decode(
-    (ttLibC_AvcodecDecoder *)decoder_,
+    decoder_,
     frame,
     decodeCallback,
     this);
