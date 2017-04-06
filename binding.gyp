@@ -1,8 +1,31 @@
 {
   "variables": {
-
+    # このタイミングでpkg-configを利用して、ライブラリの有無を確認する
+    # mp3lame faac jpegあたりはどうするかね。__has_includeで確認するか・・・
+    "libavcodec": "<!(pkg-config --exists libavcodec && echo yes || echo no)",
+    "openh264":   "<!(pkg-config --exists openh264   && echo yes || echo no)",
+    "opus":       "<!(pkg-config --exists opus       && echo yes || echo no)",
+    "speex":      "<!(pkg-config --exists speex      && echo yes || echo no)",
+    "theora":     "<!(pkg-config --exists theora     && echo yes || echo no)",
+    "vorbis":     "<!(pkg-config --exists vorbis     && echo yes || echo no)",
+    "vorbisenc":  "<!(pkg-config --exists vorbisenc  && echo yes || echo no)",
+    "x264":       "<!(pkg-config --exists x264       && echo yes || echo no)",
+    "x265":       "<!(pkg-config --exists x265       && echo yes || echo no)",
+    "soundtouch": "<!(pkg-config --exists soundtouch && echo yes || echo no)",
+    "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)"
   },
   "targets": [{
+    "conditions":[[
+      'libavcodec=="yes"', {
+        "defines": ["__ENABLE_AVCODEC__"],
+        "libraries": [
+          '<!@(pkg-config --libs libavcodec)'
+        ],
+        "include_dirs": [
+          "<!@(pkg-config --cflags-only-I libavcodec | sed -e 's/\-I//g')>"
+        ]
+      }
+    ]],
     "target_name": "ttLibJsGyp",
     "sources": [
       "csrc/ttLibJsGyp.cpp",
@@ -10,6 +33,7 @@
       "csrc/reader.cpp",
       "csrc/writer.cpp",
       "csrc/decoder.cpp",
+      "csrc/decoder/avcodec.cpp",
 
       "ttLibC/ttLibC/ttLibC.c",
       "ttLibC/ttLibC/allocator.c",
@@ -43,6 +67,7 @@
       "ttLibC/ttLibC/container/mpegts2/type/pes.c",
       "ttLibC/ttLibC/container/mpegts2/type/pmt.c",
       "ttLibC/ttLibC/container/mpegts2/type/sdt.c",
+      "ttLibC/ttLibC/decoder/avcodecDecoder.c",
       "ttLibC/ttLibC/frame/frame.c",
       "ttLibC/ttLibC/frame/audio/aac.c",
       "ttLibC/ttLibC/frame/audio/adpcmImaWav.c",

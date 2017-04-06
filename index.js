@@ -1,51 +1,59 @@
 var ttLibJsGyp = require("bindings")("ttLibJsGyp");
 
 module.exports = {
-  "Frame": ttLibJsGyp.Frame,
-  "reader": {
-    "FlvReader": function() {
+  Frame: ttLibJsGyp.Frame,
+  reader: {
+    FlvReader: function() {
       return ttLibJsGyp.Reader("flv");
     },
-    "MkvReader": function() {
+    MkvReader: function() {
       return ttLibJsGyp.Reader("mkv");
     },
-    "WebmReader": function() {
+    WebmReader: function() {
       return ttLibJsGyp.Reader("webm");
     },
-    "Mp4Reader": function() {
+    Mp4Reader: function() {
       return ttLibJsGyp.Reader("mp4");
     },
-    "MpegtsReader": function() {
+    MpegtsReader: function() {
       return ttLibJsGyp.Reader("mpegts");
     }
   },
-  "writer": {
-    "FlvWriter": function(videoCodec, audioCodec) {
+  writer: {
+    FlvWriter: function(videoCodec, audioCodec) {
       return ttLibJsGyp.Writer("flv", videoCodec, audioCodec);
     },
-    "MkvWriter": function(unitDuration, ...codecs) {
+    MkvWriter: function(unitDuration, ...codecs) {
       var args = [].concat(codecs);
       args.unshift(unitDuration);
       args.unshift("mkv");
       return ttLibJsGyp.Writer.apply(null, args);
     },
-    "WebmWriter": function(unitDuration, ...codecs) {
+    WebmWriter: function(unitDuration, ...codecs) {
       var args = [].concat(codecs);
       args.unshift(unitDuration);
       args.unshift("webm");
       return ttLibJsGyp.Writer.apply(null, args);
     },
-    "Mp4Writer": function(unitDuration, ...codecs) {
+    Mp4Writer: function(unitDuration, ...codecs) {
       var args = [].concat(codecs);
       args.unshift(unitDuration);
       args.unshift("mp4");
       return ttLibJsGyp.Writer.apply(null, args);
     },
-    "MpegtsWriter": function(unitDuration, ...codecs) {
+    MpegtsWriter: function(unitDuration, ...codecs) {
       var args = [].concat(codecs);
       args.unshift(unitDuration);
       args.unshift("mpegts");
       return ttLibJsGyp.Writer.apply(null, args);
+    }
+  },
+  decoder: {
+    AvcodecVideoDecoder: function(type, width, height) {
+      return ttLibJsGyp.Decoder.apply(null, ["avcodec", {type: type, width: width, height: height}]);
+    },
+    AvcodecAudioDecoder: function(type, sampleRate, channelNum) {
+      return ttLibJsGyp.Decoder.apply(null, ["avcodec", {type: type, sampleRate: sampleRate, channelNum: channelNum}]);
     }
   }
 };

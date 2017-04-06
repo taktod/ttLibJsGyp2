@@ -2,6 +2,7 @@
 #define CSRC_DECODER_H
 
 #include <nan.h>
+#include <ttLibC/frame/frame.h>
 
 using namespace v8;
 
@@ -18,13 +19,6 @@ typedef enum gypDecoderType_e {
   gdt_vtDecompressSession
 } gypDecoderType_e;
 
-typedef struct gypDecoder_t {
-  void *decoder;
-  gypDecoderType_e type;
-//  ttLibC_Frame *frame; // これ必要かな？
-//  frame_t inputFrame; // これも必要かね？
-} gypDecoder_t;
-
 class Decoder : public Nan::ObjectWrap {
 public:
   static void classInit(Local<Object> target);
@@ -37,9 +31,13 @@ private:
     static Nan::Persistent<Function> my_constructor;
     return my_constructor;
   }
-  explicit Decoder(Nan::NAN_METHOD_ARGS_TYPE info);
-  ~Decoder();
-  gypDecoder_t decoder_; // これでいいかな
+protected:
+  explicit Decoder();
+  virtual bool decode(ttLibC_Frame *frame) = 0;
+  void                   *decoder_;
+  gypDecoderType_e        type_;
+  Nan::Persistent<Object> jsFrame_;
+  Local<Value>            callback_;
 };
 
 #endif
