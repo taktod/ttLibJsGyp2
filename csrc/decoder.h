@@ -32,7 +32,7 @@ private:
     return my_constructor;
   }
 protected:
-  explicit Decoder();
+  Decoder();
   virtual bool decode(ttLibC_Frame *frame) = 0;
   void                   *decoder_;
   gypDecoderType_e        type_;

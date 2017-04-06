@@ -5,7 +5,7 @@
 
 class AvcodecDecoder : public Decoder {
 public:
-  explicit AvcodecDecoder(Local<Object> params);
+  AvcodecDecoder(Local<Object> params);
   bool decode(ttLibC_Frame *frame);
 private:
   static bool decodeCallback(void *ptr, ttLibC_Frame *frame);

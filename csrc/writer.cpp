@@ -135,6 +135,7 @@ NAN_METHOD(Writer::SetMode) {
 }
 
 Writer::Writer(Nan::NAN_METHOD_ARGS_TYPE info) {
+  writer_ = NULL;
   // 基本このデータはtype length codec...となっている。
   // flvだけ例外でtype videoCodec audioCodecとなっている。
   String::Utf8Value type(info[0]->ToString());
@@ -146,24 +147,26 @@ Writer::Writer(Nan::NAN_METHOD_ARGS_TYPE info) {
         Frame::getFrameType(*audioCodec));
   }
   else {
-    int num = info.Length() - 2;
+    int unitDuration = info[1]->Uint32Value();
+    Local<Array> codecs = Local<Array>::Cast(info[2]);
+    int num = codecs->Length();
     ttLibC_Frame_Type *types = new ttLibC_Frame_Type[num];
     for(int i = 0;i < num;++ i) {
-      String::Utf8Value codec(info[i + 2]->ToString());
+      String::Utf8Value codec(codecs->Get(i)->ToString());
       types[i] = Frame::getFrameType(*codec);
     }
     if(strcmp((const char *)*type, "mkv") == 0) {
-      writer_ = ttLibC_MkvWriter_make_ex(types, num, info[1]->Uint32Value());
+      writer_ = ttLibC_MkvWriter_make_ex(types, num, unitDuration);
     }
     else if(strcmp((const char *)*type, "mp4") == 0) {
-      writer_ = ttLibC_Mp4Writer_make_ex(types, num, info[1]->Uint32Value());
+      writer_ = ttLibC_Mp4Writer_make_ex(types, num, unitDuration);
     }
     else if(strcmp((const char *)*type, "webm") == 0) {
-      writer_ = ttLibC_MkvWriter_make_ex(types, num, info[1]->Uint32Value());
+      writer_ = ttLibC_MkvWriter_make_ex(types, num, unitDuration);
       writer_->type = containerType_webm;
     }
     else if(strcmp((const char *)*type, "mpegts") == 0) {
-      writer_ = ttLibC_MpegtsWriter_make_ex(types, num, info[1]->Uint32Value());
+      writer_ = ttLibC_MpegtsWriter_make_ex(types, num, unitDuration);
     }
     else {
       writer_ = NULL;

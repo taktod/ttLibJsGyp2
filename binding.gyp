@@ -34,6 +34,8 @@
       "csrc/writer.cpp",
       "csrc/decoder.cpp",
       "csrc/decoder/avcodec.cpp",
+      "csrc/encoder.cpp",
+      "csrc/encoder/openh264.cpp",
 
       "ttLibC/ttLibC/ttLibC.c",
       "ttLibC/ttLibC/allocator.c",

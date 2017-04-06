@@ -24,28 +24,16 @@ module.exports = {
       return ttLibJsGyp.Writer("flv", videoCodec, audioCodec);
     },
     MkvWriter: function(unitDuration, ...codecs) {
-      var args = [].concat(codecs);
-      args.unshift(unitDuration);
-      args.unshift("mkv");
-      return ttLibJsGyp.Writer.apply(null, args);
+      return ttLibJsGyp.Writer.apply(null, ["mkv", unitDuration, codecs]);
     },
     WebmWriter: function(unitDuration, ...codecs) {
-      var args = [].concat(codecs);
-      args.unshift(unitDuration);
-      args.unshift("webm");
-      return ttLibJsGyp.Writer.apply(null, args);
+      return ttLibJsGyp.Writer.apply(null, ["webm", unitDuration, codecs]);
     },
     Mp4Writer: function(unitDuration, ...codecs) {
-      var args = [].concat(codecs);
-      args.unshift(unitDuration);
-      args.unshift("mp4");
-      return ttLibJsGyp.Writer.apply(null, args);
+      return ttLibJsGyp.Writer.apply(null, ["mp4", unitDuration, codecs]);
     },
     MpegtsWriter: function(unitDuration, ...codecs) {
-      var args = [].concat(codecs);
-      args.unshift(unitDuration);
-      args.unshift("mpegts");
-      return ttLibJsGyp.Writer.apply(null, args);
+      return ttLibJsGyp.Writer.apply(null, ["mpegts", unitDuration, codecs]);
     }
   },
   decoder: {
