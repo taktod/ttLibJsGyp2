@@ -12,7 +12,9 @@
     "x264":       "<!(pkg-config --exists x264       && echo yes || echo no)",
     "x265":       "<!(pkg-config --exists x265       && echo yes || echo no)",
     "soundtouch": "<!(pkg-config --exists soundtouch && echo yes || echo no)",
-    "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)"
+    "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)",
+
+    "mp3lame": "<!([ -e /usr/local/include/lame/lame.h] && [ -e /usr/local/lib/libmp3lame.a ] && echo yes || echo no)"
   },
   "targets": [{
     "conditions":[
@@ -37,6 +39,14 @@
             "<!@(pkg-config --cflags-only-I openh264 | sed -e 's/\-I//g')"
           ]
         }
+      ],
+      [
+        'mp3lame=="yes"', {
+          "defines": [
+            "__ENABLE_MP3LAME_ENCODE__",
+            "__ENABLE_MP3LAME_DECODE__"
+          ]
+        }
       ]
     ],
     "target_name": "ttLibJsGyp",
@@ -49,6 +59,8 @@
       "csrc/decoder/avcodec.cpp",
       "csrc/encoder.cpp",
       "csrc/encoder/openh264.cpp",
+      "csrc/resampler.cpp",
+      "csrc/resampler/audio.cpp",
 
       "ttLibC/ttLibC/ttLibC.c",
       "ttLibC/ttLibC/allocator.c",
@@ -110,6 +122,11 @@
       "ttLibC/ttLibC/frame/video/wmv1.c",
       "ttLibC/ttLibC/frame/video/wmv2.c",
       "ttLibC/ttLibC/frame/video/yuv420.c",
+      "ttLibC/ttLibC/resampler/audioResampler.c",
+      "ttLibC/ttLibC/resampler/imageResampler.c",
+      "ttLibC/ttLibC/resampler/imageResizer.c",
+      "ttLibC/ttLibC/resampler/soundtouchResampler.c",
+      "ttLibC/ttLibC/resampler/speexdspResampler.c",
       "ttLibC/ttLibC/util/amfUtil.c",
       "ttLibC/ttLibC/util/beepUtil.c",
       "ttLibC/ttLibC/util/byteUtil.c",

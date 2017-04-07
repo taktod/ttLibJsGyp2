@@ -167,96 +167,75 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
   return true;
 }
 
-ttLibC_Frame_Type Frame::getFrameType(const char *name) {
-  int nameLength = strlen(name);
-  switch(nameLength) {
-  case 3:
-    if(     strcmp(name, "aac") == 0) {
-      return frameType_aac;
-    }
-    else if(strcmp(name, "mp3") == 0) {
-      return frameType_mp3;
-    }
-    else if(strcmp(name, "bgr") == 0) {
-      return frameType_bgr;
-    }
-    else if(strcmp(name, "vp6") == 0) {
-      return frameType_vp6;
-    }
-    else if(strcmp(name, "vp8") == 0) {
-      return frameType_vp8;
-    }
-    else if(strcmp(name, "vp9") == 0) {
-      return frameType_vp9;
-    }
-    else if(strcmp(name, "yuv") == 0) {
-      return frameType_yuv420;
-    }
-    break;
-  case 4:
-    if(     strcmp(name, "opus") == 0) {
-      return frameType_opus;
-    }
-    else if(strcmp(name, "flv1") == 0) {
-      return frameType_flv1;
-    }
-    else if(strcmp(name, "h264") == 0) {
-      return frameType_h264;
-    }
-    else if(strcmp(name, "h265") == 0) {
-      return frameType_h265;
-    }
-    else if(strcmp(name, "jpeg") == 0) {
-      return frameType_jpeg;
-    }
-    else if(strcmp(name, "wmv1") == 0) {
-      return frameType_wmv1;
-    }
-    else if(strcmp(name, "wmv2") == 0) {
-      return frameType_wmv2;
-    }
-    break;
-  case 5:
-    if(strcmp(name, "speex") == 0) {
-      return frameType_speex;
-    }
-    break;
-  case 6:
-    if(     strcmp(name, "pcmF32") == 0) {
-      return frameType_pcmF32;
-    }
-    else if(strcmp(name, "pcmS16") == 0) {
-      return frameType_pcmS16;
-    }
-    else if(strcmp(name, "vorbis") == 0) {
-      return frameType_vorbis;
-    }
-    else if(strcmp(name, "theora") == 0) {
-      return frameType_theora;
-    }
-    break;
-  case 7:
-    if(strcmp(name, "pcmAlaw") == 0) {
-      return frameType_pcm_alaw;
-    }
-    break;
-  case 8:
-    if(strcmp(name, "pcmMulaw") == 0) {
-      return frameType_pcm_mulaw;
-    }
-    break;
-  case 10:
-    if(strcmp(name, "nellymoser") == 0) {
-      return frameType_nellymoser;
-    }
-    break;
-  case 11:
-    if(strcmp(name, "adpcmImaWav") == 0) {
-      return frameType_adpcm_ima_wav;
-    }
-    break;
-  default:
-    break;
+ttLibC_Frame_Type Frame::getFrameType(std::string name) {
+  if(name == "aac") {
+    return frameType_aac;
+  }
+  else if(name == "adpcmImaWav") {
+    return frameType_adpcm_ima_wav;
+  }
+  else if(name == "mp3") {
+    return frameType_mp3;
+  }
+  else if(name == "nellymoser") {
+    return frameType_nellymoser;
+  }
+  else if(name == "opus") {
+    return frameType_opus;
+  }
+  else if(name == "pcmAlaw") {
+    return frameType_pcm_alaw;
+  }
+  else if(name == "pcmF32") {
+    return frameType_pcmF32;
+  }
+  else if(name == "pcmMulaw") {
+    return frameType_pcm_mulaw;
+  }
+  else if(name == "pcmS16") {
+    return frameType_pcmS16;
+  }
+  else if(name == "speex") {
+    return frameType_speex;
+  }
+  else if(name == "vorbis") {
+    return frameType_vorbis;
+  }
+  else if(name == "bgr") {
+    return frameType_bgr;
+  }
+  else if(name == "flv1") {
+    return frameType_flv1;
+  }
+  else if(name == "h264") {
+    return frameType_h264;
+  }
+  else if(name == "h265") {
+    return frameType_h265;
+  }
+  else if(name == "jpeg") {
+    return frameType_jpeg;
+  }
+  else if(name == "theora") {
+    return frameType_theora;
+  }
+  else if(name == "vp6") {
+    return frameType_vp6;
+  }
+  else if(name == "vp8") {
+    return frameType_vp8;
+  }
+  else if(name == "vp9") {
+    return frameType_vp9;
+  }
+  else if(name == "wmv1") {
+    return frameType_wmv1;
+  }
+  else if(name == "wmv2") {
+    return frameType_wmv2;
+  }
+  else if(name == "yuv") {
+    return frameType_yuv420;
   }
   return frameType_unknown;
 }

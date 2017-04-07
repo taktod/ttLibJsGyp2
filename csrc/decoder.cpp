@@ -3,13 +3,13 @@
 
 #include "decoder/avcodec.h"
 
-#include <string.h>
+#include <string>
 
 void Decoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Decoder").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
-  SetPrototypeMethod(tpl, "decode", Decode);
+  SetPrototypeMethod(tpl, "decode",          Decode);
   SetPrototypeMethod(tpl, "setCodecControl", SetCodecControl);
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
@@ -21,35 +21,10 @@ void Decoder::classInit(Local<Object> target) {
 NAN_METHOD(Decoder::New) {
   if(info.IsConstructCall()) {
     // ここでどのcodecの動作であるか判定しなければいけないな。
-    String::Utf8Value type(info[0]->ToString());
-    int typeLength = strlen(*type);
+    std::string type(*String::Utf8Value(info[0]->ToString()));
     Decoder *decoder = NULL;
-    switch(typeLength) {
-    case 4:
-      if(strcmp(*type, "jpeg") == 0) {
-      }
-      else if(strcmp(*type, "opus") == 0) {
-      }
-      break;
-    case 5:
-      if(strcmp(*type, "speex") == 0) {
-      }
-      break;
-    case 6:
-      if(strcmp(*type, "theora") == 0) {
-      }
-      else if(strcmp(*type, "vorbis") == 0) {
-      }
-      break;
-    case 7:
-      if(strcmp(*type, "avcodec") == 0) {
-        decoder = new AvcodecDecoder(info[1]->ToObject());
-      }
-      else if(strcmp(*type, "mp3lame") == 0) {
-      }
-      break;
-    default:
-      break;
+    if(type == "avcodec") {
+      decoder = new AvcodecDecoder(info[1]->ToObject());
     }
     if(decoder != NULL) {
       decoder->Wrap(info.This());
@@ -69,17 +44,15 @@ NAN_METHOD(Decoder::New) {
 
 NAN_METHOD(Decoder::Decode) {
   if(info.Length() == 2) {
-    Local<Value> jsFrame = info[0];
-    Local<Value> callback = info[1];
     Decoder *decoder = Nan::ObjectWrap::Unwrap<Decoder>(info.Holder());
     if(decoder == NULL) {
       puts("decoderがありません。");
       info.GetReturnValue().Set(false);
       return;
     }
-    decoder->callback_ = callback;
+    decoder->callback_ = info[1];
     info.GetReturnValue().Set(
-      decoder->decode(Frame::refFrame(jsFrame->ToObject()))
+      decoder->decode(Frame::refFrame(info[0]->ToObject()))
     );
     return;
   }

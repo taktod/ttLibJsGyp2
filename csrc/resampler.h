@@ -34,11 +34,10 @@ private:
   }
 protected:
   Resampler();
-  virtual bool decode(ttLibC_Frame *frame) = 0;
-  void                   *decoder_;
-  gypDecoderType_e        type_;
+  virtual bool resample(ttLibC_Frame *frame) = 0;
+  gypResamplerType_e      type_;
   Nan::Persistent<Object> jsFrame_;
   Local<Value>            callback_;
-}
+};
 
 #endif

@@ -1,15 +1,15 @@
 #include "writer.h"
 #include "frame.h"
 
-#include <string.h>
+#include <string>
 
 void Writer::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Writer").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   SetPrototypeMethod(tpl, "writeFrame", WriteFrame);
-  SetPrototypeMethod(tpl, "writeInfo", WriteInfo);
-  SetPrototypeMethod(tpl, "setMode", SetMode);
+  SetPrototypeMethod(tpl, "writeInfo",  WriteInfo);
+  SetPrototypeMethod(tpl, "setMode",    SetMode);
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
     target,
@@ -37,14 +37,13 @@ NAN_METHOD(Writer::New) {
 NAN_METHOD(Writer::WriteFrame) {
   if(info.Length() == 2) {
     Local<Value> jsFrame = info[0];
-    Local<Value> callback = info[1];
     Writer *writer = Nan::ObjectWrap::Unwrap<Writer>(info.Holder());
     if(writer == NULL || writer->writer_ == NULL) {
       puts("writerがありません。");
       info.GetReturnValue().Set(false);
       return;
     }
-    writer->callback_ = callback;
+    writer->callback_ = info[1];
     switch(writer->writer_->type) {
     case containerType_flv:
       if(ttLibC_FlvWriter_write(
@@ -97,14 +96,13 @@ NAN_METHOD(Writer::WriteFrame) {
 
 NAN_METHOD(Writer::WriteInfo) {
   if(info.Length() == 1) {
-    Local<Value> callback = info[0];
     Writer *writer = Nan::ObjectWrap::Unwrap<Writer>(info.Holder());
     if(writer == NULL || writer->writer_ == NULL) {
       puts("writerがありません。");
       info.GetReturnValue().Set(false);
       return;
     }
-    writer->callback_ = callback;
+    writer->callback_ = info[0];
     switch(writer->writer_->type) {
     case containerType_mpegts:
       if(ttLibC_MpegtsWriter_writeInfo(
@@ -138,13 +136,11 @@ Writer::Writer(Nan::NAN_METHOD_ARGS_TYPE info) {
   writer_ = NULL;
   // 基本このデータはtype length codec...となっている。
   // flvだけ例外でtype videoCodec audioCodecとなっている。
-  String::Utf8Value type(info[0]->ToString());
-  if(strcmp((const char *)*type, "flv") == 0) {
-    String::Utf8Value videoCodec(info[1]->ToString());
-    String::Utf8Value audioCodec(info[2]->ToString());
+  std::string type(*String::Utf8Value(info[0]->ToString()));
+  if(type == "flv") {
     writer_ = (ttLibC_ContainerWriter *)ttLibC_FlvWriter_make(
-        Frame::getFrameType(*videoCodec),
-        Frame::getFrameType(*audioCodec));
+        Frame::getFrameType(std::string(*String::Utf8Value(info[1]->ToString()))),
+        Frame::getFrameType(std::string(*String::Utf8Value(info[2]->ToString()))));
   }
   else {
     int unitDuration = info[1]->Uint32Value();
@@ -152,20 +148,19 @@ Writer::Writer(Nan::NAN_METHOD_ARGS_TYPE info) {
     int num = codecs->Length();
     ttLibC_Frame_Type *types = new ttLibC_Frame_Type[num];
     for(int i = 0;i < num;++ i) {
-      String::Utf8Value codec(codecs->Get(i)->ToString());
-      types[i] = Frame::getFrameType(*codec);
+      types[i] = Frame::getFrameType(std::string(*String::Utf8Value(codecs->Get(i)->ToString())));
     }
-    if(strcmp((const char *)*type, "mkv") == 0) {
+    if(type == "mkv") {
       writer_ = ttLibC_MkvWriter_make_ex(types, num, unitDuration);
     }
-    else if(strcmp((const char *)*type, "mp4") == 0) {
+    else if(type == "mp4") {
       writer_ = ttLibC_Mp4Writer_make_ex(types, num, unitDuration);
     }
-    else if(strcmp((const char *)*type, "webm") == 0) {
+    else if(type == "webm") {
       writer_ = ttLibC_MkvWriter_make_ex(types, num, unitDuration);
       writer_->type = containerType_webm;
     }
-    else if(strcmp((const char *)*type, "mpegts") == 0) {
+    else if(type == "mpegts") {
       writer_ = ttLibC_MpegtsWriter_make_ex(types, num, unitDuration);
     }
     else {

@@ -3,9 +3,10 @@
 
 AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {
   type_ = gdt_avcodec;
-  Local<Value> typeValue = Nan::Get(params, Nan::New("type").ToLocalChecked()).ToLocalChecked();
-  String::Utf8Value type(typeValue->ToString());
-  ttLibC_Frame_Type frameType = Frame::getFrameType(*type);
+  ttLibC_Frame_Type frameType = Frame::getFrameType(
+    std::string(*String::Utf8Value(
+      Nan::Get(params, Nan::New("type").ToLocalChecked()).ToLocalChecked()->ToString()))
+  );
   switch(frameType) {
   case frameType_h264:
     {

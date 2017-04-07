@@ -1,7 +1,7 @@
 #include "reader.h"
 #include "frame.h"
 
-#include <string.h>
+#include <string>
 
 void Reader::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
@@ -104,20 +104,17 @@ NAN_METHOD(Reader::ReadFrame) {
 }
 
 Reader::Reader(Nan::NAN_METHOD_ARGS_TYPE info) {
-  String::Utf8Value type(info[0]->ToString());
-  if(     strcmp((const char *)*type, "flv") == 0) {
+  std::string type(*String::Utf8Value(info[0]->ToString()));
+  if(type == "flv") {
     reader_ = (ttLibC_ContainerReader *)ttLibC_FlvReader_make();
   }
-  else if(strcmp((const char *)*type, "mkv") == 0) {
+  else if(type == "mkv" || type == "webm") {
     reader_ = (ttLibC_ContainerReader *)ttLibC_MkvReader_make();
   }
-  else if(strcmp((const char *)*type, "mp4") == 0) {
+  else if(type == "mp4") {
     reader_ = (ttLibC_ContainerReader *)ttLibC_Mp4Reader_make();
   }
-  else if(strcmp((const char *)*type, "webm") == 0) {
-    reader_ = (ttLibC_ContainerReader *)ttLibC_MkvReader_make();
-  }
-  else if(strcmp((const char *)*type, "mpegts") == 0) {
+  else if(type == "mpegts") {
     reader_ = (ttLibC_ContainerReader *)ttLibC_MpegtsReader_make();
   }
   else {

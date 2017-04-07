@@ -3,13 +3,13 @@
 
 #include "encoder/openh264.h"
 
-#include <string.h>
+#include <string>
 
 void Encoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Encoder").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
-  SetPrototypeMethod(tpl, "encode", Encode);
+  SetPrototypeMethod(tpl, "encode",          Encode);
   SetPrototypeMethod(tpl, "setCodecControl", SetCodecControl);
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
@@ -21,47 +21,10 @@ void Encoder::classInit(Local<Object> target) {
 NAN_METHOD(Encoder::New) {
   if(info.IsConstructCall()) {
     // ここでどのcodecの動作であるか判定しなければいけないな。
-    String::Utf8Value type(info[0]->ToString());
-    int typeLength = strlen(*type);
+    std::string type(*String::Utf8Value(info[0]->ToString()));
     Encoder *encoder = NULL;
-    switch(typeLength) {
-    case 4:
-      if(strcmp(*type, "faac") == 0) {
-      }
-      else if(strcmp(*type, "jpeg") == 0) {
-      }
-      else if(strcmp(*type, "opus") == 0) {
-      }
-      else if(strcmp(*type, "x264") == 0) {
-      }
-      else if(strcmp(*type, "x265") == 0) {
-      }
-      break;
-    case 5:
-      if(strcmp(*type, "speex") == 0) {
-      }
-      break;
-    case 6:
-      if(strcmp(*type, "fdkaac") == 0) {
-      }
-      else if(strcmp(*type, "theora") == 0) {
-      }
-      else if(strcmp(*type, "vorbis") == 0) {
-      }
-      break;
-    case 7:
-      if(strcmp(*type, "avcodec") == 0) {
-      }
-      else if(strcmp(*type, "mp3lame") == 0) {
-      }
-      break;
-    case 8:
-      if(strcmp(*type, "openh264") == 0) {
-        encoder = new Openh264Encoder(info[1]->ToObject());
-      }
-      break;
-    default:
-      break;
+    if(type == "openh264") {
+      encoder = new Openh264Encoder(info[1]->ToObject());
     }
     if(encoder != NULL) {
       encoder->Wrap(info.This());
@@ -80,19 +43,16 @@ NAN_METHOD(Encoder::New) {
 }
 
 NAN_METHOD(Encoder::Encode) {
-  // ここつくってないからこうなるのか・・・
   if(info.Length() == 2) {
-    Local<Value> jsFrame = info[0];
-    Local<Value> callback = info[1];
     Encoder *encoder = Nan::ObjectWrap::Unwrap<Encoder>(info.Holder());
     if(encoder == NULL) {
       puts("encoderがありません。");
       info.GetReturnValue().Set(false);
       return;
     }
-    encoder->callback_ = callback;
+    encoder->callback_ = info[1];
     info.GetReturnValue().Set(
-      encoder->encode(Frame::refFrame(jsFrame->ToObject()))
+      encoder->encode(Frame::refFrame(info[0]->ToObject()))
     );
     return;
   }

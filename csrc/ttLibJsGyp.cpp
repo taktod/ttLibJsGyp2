@@ -6,6 +6,7 @@ using namespace v8;
 #include "writer.h"
 #include "decoder.h"
 #include "encoder.h"
+#include "resampler.h"
 #include "frame.h"
 
 static NAN_MODULE_INIT(Init) {
@@ -13,6 +14,7 @@ static NAN_MODULE_INIT(Init) {
   Writer::classInit(target);
   Decoder::classInit(target);
   Encoder::classInit(target);
+  Resampler::classInit(target);
   Frame::classInit(target);
 }
 

@@ -48,5 +48,10 @@ module.exports = {
     Openh264Encoder: function(width, height, param, spatialParamArray) {
       return ttLibJsGyp.Encoder.apply(null, ["openh264", {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
     }
+  },
+  resampler: {
+    AudioResampler: function(type, subType, channelNum=0) {
+      return ttLibJsGyp.Resampler.apply(null, ["audio", {type: type, subType: subType, channelNum: channelNum}]);
+    }
   }
 };
