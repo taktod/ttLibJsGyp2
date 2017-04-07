@@ -12,9 +12,7 @@
     "x264":       "<!(pkg-config --exists x264       && echo yes || echo no)",
     "x265":       "<!(pkg-config --exists x265       && echo yes || echo no)",
     "soundtouch": "<!(pkg-config --exists soundtouch && echo yes || echo no)",
-    "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)",
-
-    "mp3lame": "<!([ -e /usr/local/include/lame/lame.h] && [ -e /usr/local/lib/libmp3lame.a ] && echo yes || echo no)"
+    "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)"
   },
   "targets": [{
     "conditions":[
@@ -37,14 +35,6 @@
           ],
           "include_dirs": [
             "<!@(pkg-config --cflags-only-I openh264 | sed -e 's/\-I//g')"
-          ]
-        }
-      ],
-      [
-        'mp3lame=="yes"', {
-          "defines": [
-            "__ENABLE_MP3LAME_ENCODE__",
-            "__ENABLE_MP3LAME_DECODE__"
           ]
         }
       ]
