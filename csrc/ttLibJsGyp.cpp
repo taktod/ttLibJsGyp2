@@ -16,12 +16,6 @@ static NAN_MODULE_INIT(Init) {
   Encoder::classInit(target);
   Resampler::classInit(target);
   Frame::classInit(target);
-#ifdef __HOGEHOGE__
-puts("hogehoge is defined.");
-#endif
-#ifdef __HAGEHAGE__
-puts("hagehage is defined.");
-#endif
 }
 
 NODE_MODULE(ttLibJsGyp, Init);

@@ -90,7 +90,22 @@ function setupAvcodec() {
 }
 
 function setupApple() {
-
+  if(setting["disable"].indexOf("apple") != -1) {
+    return;
+  }
+  if(setting["os"] == "darwin") {
+    // osxの場合はappleのframeworkを利用可能にしておく。
+    switch(target) {
+    case "defs":
+      console.log("__ENABLE_APPLE__");
+      break;
+    case "libs":
+      console.log("'-framework AudioToolbox' '-framework AudioUnit' '-framework VideoToolbox' '-framework CoreMedia' '-framework CoreFoundation' '-framework CoreVideo' '-framework CoreAudio'");
+      break;
+    case "includes":
+      break;
+    }
+  }
 }
 
 function setupFaac() {
@@ -106,7 +121,49 @@ function setupJpeg() {
 }
 
 function setupMp3lame() {
-
+  if(setting["disable"].indexOf("mp3lame") != -1) {
+    // mp3が無効
+    return;
+  }
+  if(setting["targetValue"] == 0) {
+    // lgpl or gplではないので、スキップ
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(checkFile("lame/lame.h")
+    && checkFile("libmp3lame.a")
+    && (checkFile("libmp3lame.so") || checkFile("libmp3lame.dylib"))) {
+      // mp3lameが使える
+      switch(target) {
+      case "defs":
+        if(setting["targetValue"] == 2) {
+          console.log("__ENABLE_MP3LAME_DECODE__");
+        }
+        console.log("__ENABLE_MP3LAME_ENCODE__");
+        break;
+      case "libs":
+        setting["searchPath"].forEach(function(path) {
+          console.log("-L" + path);
+        });
+        console.log("-lmp3lame");
+        break;
+      case "includes":
+        setting["searchPath"].forEach(function(path) {
+          console.log(path);
+        });
+        break;
+      default:
+        break;
+      }
+      break;
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupOpenh264() {
@@ -220,6 +277,24 @@ function loadSetting() {
   return setting;
 }
 
+function checkFile(file) {
+  // setting["searchPath"]/fileが存在しているか確認し、ある場合はtrue、ない場合はfalseを返す
+  var find = false;
+  setting["searchPath"].forEach(function(path) {
+    try {
+      fs.statSync(path + "/" + file);
+      find = true;
+    }
+    catch(e) {
+      if(e.code === "ENOENT") {
+        // 見つからなかった場合
+        return;
+      }
+      throw e;
+    }
+  });
+  return find;
+}
 
 
 

@@ -3,6 +3,7 @@
 
 AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {
   type_ = gdt_avcodec;
+#ifdef __ENABLE_AVCODEC__
   ttLibC_Frame_Type frameType = Frame::getFrameType(
     std::string(*String::Utf8Value(
       Nan::Get(params, Nan::New("type").ToLocalChecked()).ToLocalChecked()->ToString()))
@@ -25,10 +26,13 @@ AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {
   default:
     break;
   }
+#endif
 }
 
 AvcodecDecoder::~AvcodecDecoder() {
+#ifdef __ENABLE_AVCODEC__
   ttLibC_AvcodecDecoder_close(&decoder_);
+#endif
 }
 
 bool AvcodecDecoder::decodeCallback(void *ptr, ttLibC_Frame *ttFrame) {
@@ -51,9 +55,13 @@ bool AvcodecDecoder::decodeCallback(void *ptr, ttLibC_Frame *ttFrame) {
 }
 
 bool AvcodecDecoder::decode(ttLibC_Frame *frame) {
+#ifdef __ENABLE_AVCODEC__
   return ttLibC_AvcodecDecoder_decode(
     decoder_,
     frame,
     decodeCallback,
     this);
+#else
+  return false;
+#endif
 }

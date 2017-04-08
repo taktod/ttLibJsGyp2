@@ -47,14 +47,17 @@ readableStream.on("data", (data) => {
 
 var audioDecoder = new tt.decoder.AvcodecAudioDecoder("aac", 44100, 2);
 var audioResampler = new tt.resampler.AudioResampler("pcmS16", "littleEndian");
+var mp3lameEncoder = new tt.encoder.Mp3lameEncoder(44100, 2, 5);
 
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
     if(frame.type == "aac") {
       return audioDecoder.decode(frame, (err, frame) => {
         return audioResampler.resample(frame, (err, frame) => {
-          console.log(frame);
-          return true;
+          return mp3lameEncoder.encode(frame, (err, frame) => {
+            console.log(frame);
+            return true;
+          });
         });
       });
     }

@@ -45,6 +45,9 @@ module.exports = {
     }
   },
   encoder: {
+    Mp3lameEncoder: function(sampleRate, channelNum, quality) {
+      return ttLibJsGyp.Encoder.apply(null, ["mp3lame", {sampleRate: sampleRate, channelNum: channelNum, quality:quality}]);
+    },
     Openh264Encoder: function(width, height, param, spatialParamArray) {
       return ttLibJsGyp.Encoder.apply(null, ["openh264", {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
     }

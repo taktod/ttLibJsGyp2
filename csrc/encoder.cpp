@@ -1,6 +1,7 @@
 #include "encoder.h"
 #include "frame.h"
 
+#include "encoder/mp3lame.h"
 #include "encoder/openh264.h"
 
 #include <string>
@@ -9,8 +10,14 @@ void Encoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Encoder").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
-  SetPrototypeMethod(tpl, "encode",          Encode);
-  SetPrototypeMethod(tpl, "setCodecControl", SetCodecControl);
+  SetPrototypeMethod(tpl, "encode",             Encode);
+  SetPrototypeMethod(tpl, "forceNextFrameType", ForceNextFrameType);
+  SetPrototypeMethod(tpl, "setRCMode",          SetRCMode);
+  SetPrototypeMethod(tpl, "setIDRInterval",     SetIDRInterval);
+  SetPrototypeMethod(tpl, "forceNextKeyFrame",  ForceNextKeyFrame);
+  SetPrototypeMethod(tpl, "setBitrate",         SetBitrate);
+  SetPrototypeMethod(tpl, "setComplexity",      SetComplexity);
+  SetPrototypeMethod(tpl, "setCodecControl",    SetCodecControl);
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
     target,
@@ -23,7 +30,10 @@ NAN_METHOD(Encoder::New) {
     // ここでどのcodecの動作であるか判定しなければいけないな。
     std::string type(*String::Utf8Value(info[0]->ToString()));
     Encoder *encoder = NULL;
-    if(type == "openh264") {
+    if(type == "mp3lame") {
+      encoder = new Mp3lameEncoder(info[1]->ToObject());
+    }
+    else if(type == "openh264") {
       encoder = new Openh264Encoder(info[1]->ToObject());
     }
     if(encoder != NULL) {

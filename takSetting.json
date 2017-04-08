@@ -1,3 +1,4 @@
 {
-  "target": "gpl"
+  "target": "gpl",
+  "disable": []
 }

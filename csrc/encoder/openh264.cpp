@@ -1,13 +1,12 @@
 #include "openh264.h"
 #include "../frame.h"
-#include <ttLibC/encoder/openh264Encoder.h>
-#include <wels/codec_api.h>
-
 #ifdef __ENABLE_OPENH264__
+# include <wels/codec_api.h>
 #endif
 
 Openh264Encoder::Openh264Encoder(Local<Object> params) : Encoder() {
   type_ = get_openh264;
+#ifdef __ENABLE_OPENH264__
   uint32_t width  = Nan::Get(params, Nan::New("width").ToLocalChecked()).ToLocalChecked()->Uint32Value();
   uint32_t height = Nan::Get(params, Nan::New("height").ToLocalChecked()).ToLocalChecked()->Uint32Value();
   Local<Object> param = Nan::Get(params, Nan::New("param").ToLocalChecked()).ToLocalChecked()->ToObject();
@@ -48,10 +47,13 @@ Openh264Encoder::Openh264Encoder(Local<Object> params) : Encoder() {
     }
   }
   encoder_ = ttLibC_Openh264Encoder_makeWithSEncParamExt(&paramExt);
+#endif
 }
 
 Openh264Encoder::~Openh264Encoder() {
+#ifdef __ENABLE_OPENH264__
   ttLibC_Openh264Encoder_close(&encoder_);
+#endif
 }
 
 bool Openh264Encoder::encodeCallback(void *ptr, ttLibC_H264 *h264) {
@@ -75,6 +77,7 @@ bool Openh264Encoder::encodeCallback(void *ptr, ttLibC_H264 *h264) {
 }
 
 bool Openh264Encoder::encode(ttLibC_Frame *frame) {
+#ifdef __ENABLE_OPENH264__
   if(encoder_ == NULL) {
     puts("encoderが準備されていません。");
     return false;
@@ -88,4 +91,7 @@ bool Openh264Encoder::encode(ttLibC_Frame *frame) {
     (ttLibC_Yuv420 *)frame,
     encodeCallback,
     this);
+#else
+  return false;
+#endif
 }
