@@ -1,50 +1,6 @@
 {
-  "variables": {
-    # このタイミングでpkg-configを利用して、ライブラリの有無を確認する
-    # mp3lame faac jpegあたりはどうするかね。__has_includeで確認するか・・・
-    "libavcodec": "<!(pkg-config --exists libavcodec && echo yes || echo no)",
-    "openh264":   "<!(pkg-config --exists openh264   && echo yes || echo no)",
-    "opus":       "<!(pkg-config --exists opus       && echo yes || echo no)",
-    "speex":      "<!(pkg-config --exists speex      && echo yes || echo no)",
-    "theora":     "<!(pkg-config --exists theora     && echo yes || echo no)",
-    "vorbis":     "<!(pkg-config --exists vorbis     && echo yes || echo no)",
-    "vorbisenc":  "<!(pkg-config --exists vorbisenc  && echo yes || echo no)",
-    "x264":       "<!(pkg-config --exists x264       && echo yes || echo no)",
-    "x265":       "<!(pkg-config --exists x265       && echo yes || echo no)",
-    "soundtouch": "<!(pkg-config --exists soundtouch && echo yes || echo no)",
-    "speexdsp":   "<!(pkg-config --exists speexdsp   && echo yes || echo no)",
-    "mp3lame": "yes"
-  },
   "targets": [{
-    "conditions":[
-      [
-        'libavcodec=="yes"', {
-          "defines": ["__ENABLE_AVCODEC__"],
-          "libraries": [
-            '<!@(pkg-config --libs libavcodec)'
-          ],
-          "include_dirs": [
-            "<!@(pkg-config --cflags-only-I libavcodec | sed -e 's/\-I//g')"
-          ]
-        }
-      ],
-      [
-        'openh264=="yes"', {
-          "defines": ["__ENABLE_OPENH264__"],
-          "libraries": [
-            '<!@(pkg-config --libs openh264)'
-          ],
-          "include_dirs": [
-            "<!@(pkg-config --cflags-only-I openh264 | sed -e 's/\-I//g')"
-          ]
-        }
-      ],
-      [
-        'mp3lame=="yes"', {
-          "defines": ["<!@(node test.js)"]
-        }
-      ]
-    ],
+    "defines": ["<!@(node libcheck.js defs)"],
     "target_name": "ttLibJsGyp",
     "sources": [
       "csrc/ttLibJsGyp.cpp",
@@ -134,11 +90,14 @@
       "ttLibC/ttLibC/util/stlListUtil.cpp",
       "ttLibC/ttLibC/util/stlMapUtil.cpp"
     ],
+    "libraries": [
+      '<!@(node libcheck.js libs)'
+    ],
     "include_dirs": [
       "<!(node -e \"require('nan')\")",
       "ttLibC/",
       "./",
-      "/usr/local/lib"
+      '<!@(node libcheck.js includes)'
     ]
   }]
 }
