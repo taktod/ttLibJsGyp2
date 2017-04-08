@@ -1,6 +1,7 @@
 #include "encoder.h"
 #include "frame.h"
 
+#include "encoder/faac.h"
 #include "encoder/mp3lame.h"
 #include "encoder/openh264.h"
 
@@ -30,7 +31,10 @@ NAN_METHOD(Encoder::New) {
     // ここでどのcodecの動作であるか判定しなければいけないな。
     std::string type(*String::Utf8Value(info[0]->ToString()));
     Encoder *encoder = NULL;
-    if(type == "mp3lame") {
+    if(type == "faac") {
+      encoder = new FaacEncoder(info[1]->ToObject());
+    }
+    else if(type == "mp3lame") {
       encoder = new Mp3lameEncoder(info[1]->ToObject());
     }
     else if(type == "openh264") {

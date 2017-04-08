@@ -109,7 +109,43 @@ function setupApple() {
 }
 
 function setupFaac() {
-
+  if(setting["disable"].indexOf("faac") != -1) {
+    return;
+  }
+  if(setting["targetValue"] == 0) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(checkFile("faac.h")
+    && checkFile("faaccfg.h")
+    && checkFile("libfaac.a")
+    && (checkFile("libfaac.dylib") || checkFile("libfaac.so"))) {
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_FAAC_ENCODE__");
+        break;
+      case "libs":
+        setting["searchPath"].forEach(function(path) {
+          console.log("-L" + path);
+        });
+        console.log("-lfaac");
+        break;
+      case "includes":
+        setting["searchPath"].forEach(function(path) {
+          console.log(path);
+        });
+        break;
+      default:
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupFdkaac() {
@@ -157,7 +193,6 @@ function setupMp3lame() {
       default:
         break;
       }
-      break;
     }
     break;
   case "windows":

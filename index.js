@@ -45,6 +45,9 @@ module.exports = {
     }
   },
   encoder: {
+    FaacEncoder: function(type, sampleRate, channelNum, bitrate) {
+      return ttLibJsGyp.Encoder.apply(null, ["faac", {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
+    },
     Mp3lameEncoder: function(sampleRate, channelNum, quality) {
       return ttLibJsGyp.Encoder.apply(null, ["mp3lame", {sampleRate: sampleRate, channelNum: channelNum, quality:quality}]);
     },
