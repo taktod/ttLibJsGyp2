@@ -71,6 +71,9 @@ module.exports = {
     AudioResampler: function(type, subType, channelNum=0) {
       return ttLibJsGyp.Resampler.apply(null, ["audio", {type: type, subType: subType, channelNum: channelNum}]);
     },
+    ImageResampler: function(type, subType) {
+      return ttLibJsGyp.Resampler.apply(null, ["image", {type: type, subType: subType}]);
+    },
     SpeexdspResampler: function(channelNum, inSampleRate, outSampleRate, quality) {
       return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
     }

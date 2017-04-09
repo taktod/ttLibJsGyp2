@@ -13,29 +13,25 @@ AudioResampler::AudioResampler(Local<Object> params) {
   std::string subType(*String::Utf8Value(Nan::Get(params, Nan::New("subType").ToLocalChecked()).ToLocalChecked()->ToString()));
   switch(frameType_) {
   case frameType_pcmS16:
-    {
-      if(subType == "bigEndian") {
-        subType_ = PcmS16Type_bigEndian;
-      }
-      else if(subType == "bigEndianPlanar") {
-        subType_ = PcmS16Type_bigEndian_planar;
-      }
-      else if(subType == "littleEndian") {
-        subType_ = PcmS16Type_littleEndian;
-      }
-      else if(subType == "littleEndianPlanar") {
-        subType_ = PcmS16Type_littleEndian_planar;
-      }
+    if(subType == "bigEndian") {
+      subType_ = PcmS16Type_bigEndian;
+    }
+    else if(subType == "bigEndianPlanar") {
+      subType_ = PcmS16Type_bigEndian_planar;
+    }
+    else if(subType == "littleEndian") {
+      subType_ = PcmS16Type_littleEndian;
+    }
+    else if(subType == "littleEndianPlanar") {
+      subType_ = PcmS16Type_littleEndian_planar;
     }
     break;
   case frameType_pcmF32:
-    {
-      if(subType == "planar") {
-        subType_ = PcmF32Type_planar;
-      }
-      else if(subType == "interleave") {
-        subType_ = PcmF32Type_interleave;
-      }
+    if(subType == "planar") {
+      subType_ = PcmF32Type_planar;
+    }
+    else if(subType == "interleave") {
+      subType_ = PcmF32Type_interleave;
     }
     break;
   default:

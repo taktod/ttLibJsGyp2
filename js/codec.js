@@ -74,6 +74,8 @@ var x264Encoder = new tt.encoder.X264Encoder(
 var theoraEncoder = new tt.encoder.TheoraEncoder(
   640, 360, 25, 320000, 15
 );
+var imageResampler = new tt.resampler.ImageResampler(
+  "bgr", "bgr");
 
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
@@ -87,10 +89,14 @@ readableStream.on("data", (data) => {
           console.log(frame);
           return true;
         });*/
-        return theoraEncoder.encode(frame, (err, frame) => {
+/*        return theoraEncoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
-        });
+        });*/
+        return imageResampler.resample(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        })
       });
     }
     else {

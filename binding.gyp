@@ -18,6 +18,7 @@
       "csrc/encoder/x264.cpp",
       "csrc/resampler.cpp",
       "csrc/resampler/audio.cpp",
+      "csrc/resampler/image.cpp",
       "csrc/resampler/speexdsp.cpp",
 
       "ttLibC/ttLibC/ttLibC.c",

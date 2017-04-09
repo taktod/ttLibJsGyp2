@@ -2,6 +2,7 @@
 #include "frame.h"
 
 #include "resampler/audio.h"
+#include "resampler/image.h"
 #include "resampler/speexdsp.h"
 
 #include <string>
@@ -42,6 +43,9 @@ NAN_METHOD(Resampler::New) {
     Resampler *resampler = NULL;
     if(type == "audio") {
       resampler = new AudioResampler(info[1]->ToObject());
+    }
+    else if(type == "image") {
+      resampler = new ImageResampler(info[1]->ToObject());
     }
     else if(type == "speexdsp") {
       resampler = new SpeexdspResampler(info[1]->ToObject());
