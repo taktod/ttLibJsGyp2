@@ -5,6 +5,16 @@
 
 #include <string>
 
+class DummyDecoder : public Decoder {
+public:
+  DummyDecoder() : Decoder() {}
+  bool decode(ttLibC_Frame *frame) {
+    return false;
+  }
+private:
+  ~DummyDecoder() {}
+};
+
 void Decoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Decoder").ToLocalChecked());
@@ -25,6 +35,9 @@ NAN_METHOD(Decoder::New) {
     Decoder *decoder = NULL;
     if(type == "avcodec") {
       decoder = new AvcodecDecoder(info[1]->ToObject());
+    }
+    else {
+      decoder = new DummyDecoder();
     }
     if(decoder != NULL) {
       decoder->Wrap(info.This());

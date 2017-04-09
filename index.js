@@ -53,6 +53,12 @@ module.exports = {
     },
     Openh264Encoder: function(width, height, param, spatialParamArray) {
       return ttLibJsGyp.Encoder.apply(null, ["openh264", {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
+    },
+    X264Encoder: function(width, height, preset="", tune="", profile="", param={}) {
+      if(!profile || profile == "") {
+        profile = "baseline";
+      }
+      return ttLibJsGyp.Encoder.apply(null, ["x264", {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
     }
   },
   resampler: {

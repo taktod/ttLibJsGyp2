@@ -5,6 +5,16 @@
 
 #include <string>
 
+class DummyResampler : public Resampler {
+public:
+  DummyResampler() : Resampler() {}
+  bool resample(ttLibC_Frame *frame) {
+    return false;
+  }
+private:
+  ~DummyResampler() {}
+};
+
 void Resampler::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Resampler").ToLocalChecked());
@@ -31,6 +41,9 @@ NAN_METHOD(Resampler::New) {
     Resampler *resampler = NULL;
     if(type == "audio") {
       resampler = new AudioResampler(info[1]->ToObject());
+    }
+    else {
+      resampler = new DummyResampler();
     }
     if(resampler != NULL) {
       resampler->Wrap(info.This());

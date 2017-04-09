@@ -13,6 +13,7 @@
       "csrc/encoder/faac.cpp",
       "csrc/encoder/mp3lame.cpp",
       "csrc/encoder/openh264.cpp",
+      "csrc/encoder/x264.cpp",
       "csrc/resampler.cpp",
       "csrc/resampler/audio.cpp",
 
@@ -52,6 +53,7 @@
       "ttLibC/ttLibC/encoder/faacEncoder.c",
       "ttLibC/ttLibC/encoder/mp3lameEncoder.c",
       "ttLibC/ttLibC/encoder/openh264Encoder.cpp",
+      "ttLibC/ttLibC/encoder/x264Encoder.cpp",
       "ttLibC/ttLibC/frame/frame.c",
       "ttLibC/ttLibC/frame/audio/aac.c",
       "ttLibC/ttLibC/frame/audio/adpcmImaWav.c",

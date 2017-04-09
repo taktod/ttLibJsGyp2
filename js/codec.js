@@ -64,12 +64,23 @@ var openh264Encoder = new tt.encoder.Openh264Encoder(
     }
   ]*/
   );
+var x264Encoder = new tt.encoder.X264Encoder(
+  640,
+  360,
+  "",
+  "",
+  "",
+  {});
 
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
     if(frame.type == "h264") {
       return videoDecoder.decode(frame, (err, frame) => {
-        return openh264Encoder.encode(frame, (err, frame) => {
+/*        return openh264Encoder.encode(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        });*/
+        return x264Encoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
         });

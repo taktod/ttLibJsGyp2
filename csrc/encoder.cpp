@@ -4,8 +4,19 @@
 #include "encoder/faac.h"
 #include "encoder/mp3lame.h"
 #include "encoder/openh264.h"
+#include "encoder/x264.h"
 
 #include <string>
+
+class DummyEncoder : public Encoder {
+public:
+  DummyEncoder() : Encoder() {}
+  bool encode(ttLibC_Frame *frame) {
+    return false;
+  }
+private:
+  ~DummyEncoder() {}
+};
 
 void Encoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
@@ -40,6 +51,15 @@ NAN_METHOD(Encoder::New) {
     else if(type == "openh264") {
       encoder = new Openh264Encoder(info[1]->ToObject());
     }
+    else if(type == "x264") {
+      encoder = new X264Encoder(info[1]->ToObject());
+    }
+    else {
+      printf("%sは未定義です。\n", type.c_str());
+      encoder = new DummyEncoder();
+    }
+    // TODO ここでdummy wrapperをつくっておかないと
+    // unwrapしたときにゴミメモリーが応答されることがあるみたいですね。
     if(encoder != NULL) {
       encoder->Wrap(info.This());
     }
@@ -64,6 +84,7 @@ NAN_METHOD(Encoder::Encode) {
       info.GetReturnValue().Set(false);
       return;
     }
+    // あーなんかとれるのか・・・こりゃまずいな。
     encoder->callback_ = info[1];
     info.GetReturnValue().Set(
       encoder->encode(Frame::refFrame(info[0]->ToObject()))
