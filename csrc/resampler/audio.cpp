@@ -2,7 +2,6 @@
 #include "../frame.h"
 
 #include <ttLibC/resampler/audioResampler.h>
-#include <string>
 
 AudioResampler::AudioResampler(Local<Object> params) {
   type_ = grt_audio;
@@ -15,7 +14,6 @@ AudioResampler::AudioResampler(Local<Object> params) {
   switch(frameType_) {
   case frameType_pcmS16:
     {
-      puts("pcmS16");
       if(subType == "bigEndian") {
         subType_ = PcmS16Type_bigEndian;
       }
@@ -32,7 +30,6 @@ AudioResampler::AudioResampler(Local<Object> params) {
     break;
   case frameType_pcmF32:
     {
-      puts("pcmF32");
       if(subType == "planar") {
         subType_ = PcmF32Type_planar;
       }
@@ -49,6 +46,10 @@ AudioResampler::AudioResampler(Local<Object> params) {
   }
   channelNum_ = Nan::Get(params, Nan::New("channelNum").ToLocalChecked()).ToLocalChecked()->Uint32Value();
   prevFrame_ = NULL;
+}
+
+AudioResampler::~AudioResampler() {
+  ttLibC_Audio_close(&prevFrame_);
 }
 
 bool AudioResampler::resample(ttLibC_Frame *ttFrame) {
@@ -110,8 +111,4 @@ bool AudioResampler::resample(ttLibC_Frame *ttFrame) {
     puts("応答が設定されていません。");
   }
   return false;
-}
-
-AudioResampler::~AudioResampler() {
-  ttLibC_Audio_close(&prevFrame_);
 }

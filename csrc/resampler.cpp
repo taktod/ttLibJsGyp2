@@ -2,6 +2,7 @@
 #include "frame.h"
 
 #include "resampler/audio.h"
+#include "resampler/speexdsp.h"
 
 #include <string>
 
@@ -42,7 +43,11 @@ NAN_METHOD(Resampler::New) {
     if(type == "audio") {
       resampler = new AudioResampler(info[1]->ToObject());
     }
+    else if(type == "speexdsp") {
+      resampler = new SpeexdspResampler(info[1]->ToObject());
+    }
     else {
+      printf("%sは未定義です。\n", type.c_str());
       resampler = new DummyResampler();
     }
     if(resampler != NULL) {

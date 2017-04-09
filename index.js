@@ -54,6 +54,9 @@ module.exports = {
     Openh264Encoder: function(width, height, param, spatialParamArray) {
       return ttLibJsGyp.Encoder.apply(null, ["openh264", {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
     },
+    OpusEncoder: function(sampleRate, channelNum, unitSampleNum) {
+      return ttLibJsGyp.Encoder.apply(null, ["opus", {sampleRate: sampleRate, channelNum: channelNum, unitSampleNum: unitSampleNum}]);
+    },
     X264Encoder: function(width, height, preset="", tune="", profile="", param={}) {
       if(!profile || profile == "") {
         profile = "baseline";
@@ -64,6 +67,9 @@ module.exports = {
   resampler: {
     AudioResampler: function(type, subType, channelNum=0) {
       return ttLibJsGyp.Resampler.apply(null, ["audio", {type: type, subType: subType, channelNum: channelNum}]);
+    },
+    SpeexdspResampler: function(channelNum, inSampleRate, outSampleRate, quality) {
+      return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
     }
   }
 };

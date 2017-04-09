@@ -41,23 +41,23 @@ declare module 'ttlibjsgyp' {
       setMode(mode:number):boolean;
     }
     export class MkvWriter {
-      constructor(unitDuration:number, ...codecs:string);
+      constructor(unitDuration:number, ...codecs:string[]);
       writeFrame(frame:Frame, func:{(err:string, data:Buffer):boolean}):boolean;
       setMode(mode:number):boolean;
     }
     export class Mp4Writer {
-      constructor(unitDuration:number, ...codecs:string);
+      constructor(unitDuration:number, ...codecs:string[]);
       writeFrame(frame:Frame, func:{(err:string, data:Buffer):boolean}):boolean;
       setMode(mode:number):boolean;
     }
     export class MpegtsWriter {
-      constructor(unitDuration:number, ...codecs:string);
+      constructor(unitDuration:number, ...codecs:string[]);
       writeFrame(frame:Frame, func:{(err:string, data:Buffer):boolean}):boolean;
       writeInfo(func:{(err:string, data:Buffer):boolean}):boolean;
       setMode(mode:number):boolean;
     }
     export class WebmWriter {
-      constructor(unitDuration:number, ...codecs:string);
+      constructor(unitDuration:number, ...codecs:string[]);
       writeFrame(frame:Frame, func:{(err:string, data:Buffer):boolean}):boolean;
       setMode(mode:number):boolean;
     }

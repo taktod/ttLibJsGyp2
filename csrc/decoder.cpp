@@ -37,6 +37,7 @@ NAN_METHOD(Decoder::New) {
       decoder = new AvcodecDecoder(info[1]->ToObject());
     }
     else {
+      printf("%sは未定義です。\n", type.c_str());
       decoder = new DummyDecoder();
     }
     if(decoder != NULL) {

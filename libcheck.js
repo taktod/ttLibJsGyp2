@@ -231,7 +231,31 @@ function setupOpenh264() {
 }
 
 function setupOpus() {
-
+  if(setting["disable"].indexOf("opus") != -1) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(exec("pkg-config --exists opus && echo yes || echo no").toString().trim() == "yes") {
+      // pkg-configで存在してる。
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_OPUS__");
+        break;
+      case "libs":
+        console.log(exec("pkg-config --libs opus").toString().trim());
+        break;
+      case "includes":
+        console.log(exec("pkg-config --cflags-only-I opus | sed -e 's/\-I//g'").toString().trim());
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupTheora() {
@@ -247,7 +271,31 @@ function setupSpeex() {
 }
 
 function setupSpeexdsp() {
-
+  if(setting["disable"].indexOf("speexdsp") != -1) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(exec("pkg-config --exists speexdsp && echo yes || echo no").toString().trim() == "yes") {
+      // pkg-configで存在してる。
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_SPEEXDSP__");
+        break;
+      case "libs":
+        console.log(exec("pkg-config --libs speexdsp").toString().trim());
+        break;
+      case "includes":
+        console.log(exec("pkg-config --cflags-only-I speexdsp | sed -e 's/\-I//g'").toString().trim());
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupVorbis() {

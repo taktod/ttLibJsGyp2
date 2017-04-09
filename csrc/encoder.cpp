@@ -4,6 +4,7 @@
 #include "encoder/faac.h"
 #include "encoder/mp3lame.h"
 #include "encoder/openh264.h"
+#include "encoder/opus.h"
 #include "encoder/x264.h"
 
 #include <string>
@@ -50,6 +51,9 @@ NAN_METHOD(Encoder::New) {
     }
     else if(type == "openh264") {
       encoder = new Openh264Encoder(info[1]->ToObject());
+    }
+    else if(type == "opus") {
+      encoder = new OpusEncoder(info[1]->ToObject());
     }
     else if(type == "x264") {
       encoder = new X264Encoder(info[1]->ToObject());
