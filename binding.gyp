@@ -20,6 +20,7 @@
       "csrc/resampler.cpp",
       "csrc/resampler/audio.cpp",
       "csrc/resampler/image.cpp",
+      "csrc/resampler/soundtouch.cpp",
       "csrc/resampler/speexdsp.cpp",
 
       "ttLibC/ttLibC/ttLibC.c",

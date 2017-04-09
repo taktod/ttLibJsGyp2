@@ -287,7 +287,34 @@ function setupTheora() {
 }
 
 function setupSoundtouch() {
-
+  if(setting["disable"].indexOf("soundtouch") != -1) {
+    return;
+  }
+  if(setting["targetValue"] == 0) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(exec("pkg-config --exists soundtouch && echo yes || echo no").toString().trim() == "yes") {
+      // pkg-configで存在してる。
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_SOUNDTOUCH__");
+        break;
+      case "libs":
+        console.log(exec("pkg-config --libs soundtouch").toString().trim());
+        break;
+      case "includes":
+        console.log(exec("pkg-config --cflags-only-I soundtouch | sed -e 's/\-I//g'").toString().trim());
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupSpeex() {

@@ -3,6 +3,7 @@
 
 #include "resampler/audio.h"
 #include "resampler/image.h"
+#include "resampler/soundtouch.h"
 #include "resampler/speexdsp.h"
 
 #include <string>
@@ -47,6 +48,9 @@ NAN_METHOD(Resampler::New) {
     else if(type == "image") {
       resampler = new ImageResampler(info[1]->ToObject());
     }
+    else if(type == "soundtouch") {
+      resampler = new SoundtouchResampler(info[1]->ToObject());
+    }
     else if(type == "speexdsp") {
       resampler = new SpeexdspResampler(info[1]->ToObject());
     }
@@ -88,31 +92,73 @@ NAN_METHOD(Resampler::Resample) {
 }
 
 NAN_METHOD(Resampler::SetRate) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setRate(info[0]->NumberValue());
+    }
+  }
 }
 
 NAN_METHOD(Resampler::SetTempo) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setTempo(info[0]->NumberValue());
+    }
+  }
 }
 
 NAN_METHOD(Resampler::SetRateChange) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setRateChange(info[0]->NumberValue());
+    }
+  }
 }
 
 NAN_METHOD(Resampler::SetTempoChange) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setTempoChange(info[0]->NumberValue());
+    }
+  }
 }
 
 NAN_METHOD(Resampler::SetPitch) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setPitch(info[0]->NumberValue());
+    }
+  }
 }
 
 NAN_METHOD(Resampler::SetPitchOctaves) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setPitchOctaves(info[0]->NumberValue());
+    }
+  }
 }
 
 NAN_METHOD(Resampler::SetPitchSemiTones) {
-
+  if(info.Length() == 1) {
+    Resampler *resampler = Nan::ObjectWrap::Unwrap<Resampler>(info.Holder());
+    if(resampler->type_ == grt_soundtouch) {
+      SoundtouchResampler *soundtouch = (SoundtouchResampler *)resampler;
+      soundtouch->setPitchSemiTones(info[0]->NumberValue());
+    }
+  }
 }
 
 Resampler::Resampler() {
