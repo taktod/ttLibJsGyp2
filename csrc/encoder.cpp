@@ -7,6 +7,7 @@
 #include "encoder/opus.h"
 #include "encoder/theora.h"
 #include "encoder/x264.h"
+#include "encoder/x265.h"
 
 #include <string>
 
@@ -61,6 +62,9 @@ NAN_METHOD(Encoder::New) {
     }
     else if(type == "x264") {
       encoder = new X264Encoder(info[1]->ToObject());
+    }
+    else if(type == "x265") {
+      encoder = new X265Encoder(info[1]->ToObject());
     }
     else {
       printf("%sは未定義です。\n", type.c_str());

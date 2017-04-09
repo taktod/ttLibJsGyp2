@@ -358,7 +358,34 @@ function setupX264() {
 }
 
 function setupX265() {
-
+  if(setting["disable"].indexOf("x265") != -1) {
+    return;
+  }
+  if(setting["targetValue"] != 2) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(exec("pkg-config --exists x265 && echo yes || echo no").toString().trim() == "yes") {
+      // pkg-configで存在してる。
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_X265__");
+        break;
+      case "libs":
+        console.log(exec("pkg-config --libs x265").toString().trim());
+        break;
+      case "includes":
+        console.log(exec("pkg-config --cflags-only-I x265 | sed -e 's/\-I//g'").toString().trim());
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function loadSetting() {

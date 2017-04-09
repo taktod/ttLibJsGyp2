@@ -65,6 +65,12 @@ module.exports = {
         profile = "baseline";
       }
       return ttLibJsGyp.Encoder.apply(null, ["x264", {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
+    },
+    X265Encoder: function(width, height, preset="", tune="", profile="", param={}) {
+      if(!profile || profile == "") {
+        profile = "main";
+      }
+      return ttLibJsGyp.Encoder.apply(null, ["x265", {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
     }
   },
   resampler: {

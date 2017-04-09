@@ -71,6 +71,13 @@ var x264Encoder = new tt.encoder.X264Encoder(
   "",
   "",
   {});
+var x265Encoder = new tt.encoder.X265Encoder(
+  640,
+  360,
+  "",
+  "",
+  "",
+  {});
 var theoraEncoder = new tt.encoder.TheoraEncoder(
   640, 360, 25, 320000, 15
 );
@@ -89,14 +96,18 @@ readableStream.on("data", (data) => {
           console.log(frame);
           return true;
         });*/
+        return x265Encoder.encode(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        });
 /*        return theoraEncoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
         });*/
-        return imageResampler.resample(frame, (err, frame) => {
+/*        return imageResampler.resample(frame, (err, frame) => {
           console.log(frame);
           return true;
-        })
+        })*/
       });
     }
     else {
