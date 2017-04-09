@@ -79,10 +79,11 @@ var x265Encoder = new tt.encoder.X265Encoder(
   "",
   {});
 var theoraEncoder = new tt.encoder.TheoraEncoder(
-  640, 360, 25, 320000, 15
-);
+  640, 360, 25, 320000, 15);
 var imageResampler = new tt.resampler.ImageResampler(
   "bgr", "bgr");
+var jpegEncoder = new tt.encoder.JpegEncoder(
+  640, 360, 90);
 
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
@@ -96,10 +97,10 @@ readableStream.on("data", (data) => {
           console.log(frame);
           return true;
         });*/
-        return x265Encoder.encode(frame, (err, frame) => {
+/*        return x265Encoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
-        });
+        });*/
 /*        return theoraEncoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
@@ -108,6 +109,10 @@ readableStream.on("data", (data) => {
           console.log(frame);
           return true;
         })*/
+        return jpegEncoder.encode(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        })
       });
     }
     else {

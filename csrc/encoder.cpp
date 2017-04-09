@@ -3,6 +3,7 @@
 
 #include "encoder/faac.h"
 #include "encoder/mp3lame.h"
+#include "encoder/jpeg.h"
 #include "encoder/openh264.h"
 #include "encoder/opus.h"
 #include "encoder/theora.h"
@@ -51,6 +52,9 @@ NAN_METHOD(Encoder::New) {
     else if(type == "mp3lame") {
       encoder = new Mp3lameEncoder(info[1]->ToObject());
     }
+    else if(type == "jpeg") {
+      encoder = new JpegEncoder(info[1]->ToObject());
+    }
     else if(type == "openh264") {
       encoder = new Openh264Encoder(info[1]->ToObject());
     }
@@ -96,7 +100,6 @@ NAN_METHOD(Encoder::Encode) {
       info.GetReturnValue().Set(false);
       return;
     }
-    // あーなんかとれるのか・・・こりゃまずいな。
     encoder->callback_ = info[1];
     info.GetReturnValue().Set(
       encoder->encode(Frame::refFrame(info[0]->ToObject()))

@@ -153,7 +153,41 @@ function setupFdkaac() {
 }
 
 function setupJpeg() {
-
+  if(setting["disable"].indexOf("jpeg") != -1) {
+    // mp3が無効
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(checkFile("jpeglib.h")
+    && checkFile("libjpeg.a")
+    && (checkFile("libjpeg.so") || checkFile("libjpeg.dylib"))) {
+      // mp3lameが使える
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_JPEG__");
+        break;
+      case "libs":
+        setting["searchPath"].forEach(function(path) {
+          console.log("-L" + path);
+        });
+        console.log("-ljpeg");
+        break;
+      case "includes":
+        setting["searchPath"].forEach(function(path) {
+          console.log(path);
+        });
+        break;
+      default:
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupMp3lame() {
