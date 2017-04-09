@@ -259,7 +259,31 @@ function setupOpus() {
 }
 
 function setupTheora() {
-
+  if(setting["disable"].indexOf("theora") != -1) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    if(exec("pkg-config --exists theora ogg && echo yes || echo no").toString().trim() == "yes") {
+      // pkg-configで存在してる。
+      switch(target) {
+      case "defs":
+        console.log("__ENABLE_THEORA__");
+        break;
+      case "libs":
+        console.log(exec("pkg-config --libs theora ogg").toString().trim());
+        break;
+      case "includes":
+        console.log(exec("pkg-config --cflags-only-I theora ogg | sed -e 's/\-I//g'").toString().trim());
+        break;
+      }
+    }
+    break;
+  case "windows":
+  default:
+    break;
+  }
 }
 
 function setupSoundtouch() {

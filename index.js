@@ -57,6 +57,9 @@ module.exports = {
     OpusEncoder: function(sampleRate, channelNum, unitSampleNum) {
       return ttLibJsGyp.Encoder.apply(null, ["opus", {sampleRate: sampleRate, channelNum: channelNum, unitSampleNum: unitSampleNum}]);
     },
+    TheoraEncoder: function(width, height, quality, bitrate, keyFrameInterval) {
+      return ttLibJsGyp.Encoder.apply(null, ["theora", {width: width, height: height, quality: quality, bitrate: bitrate, keyFrameInterval: keyFrameInterval}]);
+    },
     X264Encoder: function(width, height, preset="", tune="", profile="", param={}) {
       if(!profile || profile == "") {
         profile = "baseline";

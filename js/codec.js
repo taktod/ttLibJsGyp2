@@ -71,6 +71,9 @@ var x264Encoder = new tt.encoder.X264Encoder(
   "",
   "",
   {});
+var theoraEncoder = new tt.encoder.TheoraEncoder(
+  640, 360, 25, 320000, 15
+);
 
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
@@ -80,7 +83,11 @@ readableStream.on("data", (data) => {
           console.log(frame);
           return true;
         });*/
-        return x264Encoder.encode(frame, (err, frame) => {
+/*        return x264Encoder.encode(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        });*/
+        return theoraEncoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
         });

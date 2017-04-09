@@ -57,7 +57,6 @@ Openh264Encoder::~Openh264Encoder() {
 }
 
 bool Openh264Encoder::encodeCallback(void *ptr, ttLibC_H264 *h264) {
-  // あとはつくっていくだけ
   Openh264Encoder *encoder = (Openh264Encoder *)ptr;
   auto callback = new Nan::Callback(encoder->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
