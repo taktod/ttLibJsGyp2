@@ -80,6 +80,9 @@ module.exports = {
     ImageResampler: function(type, subType) {
       return ttLibJsGyp.Resampler.apply(null, ["image", {type: type, subType: subType}]);
     },
+/*  // imageResizerは放置しておく。とりあえずelectronで使う予定だったら、webGLでresize処理は済むし・・・
+    ImageResizer: function(){
+    },*/
     SoundtouchResampler: function(sampleRate, channelNum) {
       return ttLibJsGyp.Resampler.apply(null, ["soundtouch", {sampleRate: sampleRate, channelNum: channelNum}]);
     },
