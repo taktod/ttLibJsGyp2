@@ -36,7 +36,6 @@ NAN_METHOD(Writer::New) {
 
 NAN_METHOD(Writer::WriteFrame) {
   if(info.Length() == 2) {
-    Local<Value> jsFrame = info[0];
     Writer *writer = Nan::ObjectWrap::Unwrap<Writer>(info.Holder());
     if(writer == NULL || writer->writer_ == NULL) {
       puts("writerがありません。");
@@ -48,7 +47,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_flv:
       if(ttLibC_FlvWriter_write(
           (ttLibC_FlvWriter *)writer->writer_,
-          Frame::refFrame(jsFrame->ToObject()),
+          Frame::refFrame(info[0]->ToObject()),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);
@@ -59,7 +58,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_webm:
       if(ttLibC_MkvWriter_write(
           writer->writer_,
-          Frame::refFrame(jsFrame->ToObject()),
+          Frame::refFrame(info[0]->ToObject()),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);
@@ -69,7 +68,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_mp4:
       if(ttLibC_Mp4Writer_write(
           writer->writer_,
-          Frame::refFrame(jsFrame->ToObject()),
+          Frame::refFrame(info[0]->ToObject()),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);
@@ -79,7 +78,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_mpegts:
       if(ttLibC_MpegtsWriter_write(
           writer->writer_,
-          Frame::refFrame(jsFrame->ToObject()),
+          Frame::refFrame(info[0]->ToObject()),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);

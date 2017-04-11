@@ -172,15 +172,20 @@ NAN_METHOD(NetStream::Publish) {
 NAN_METHOD(NetStream::QueueFrame) {
   if(info.Length() != 1) {
     puts("パラメーターはフレーム1つである必要があります。");
-    info.GetReturnValue().Set(Nan::New(false));
+    info.GetReturnValue().Set(false);
     return;
   }
   if(!info[0]->IsObject()) {
     puts("1st argはframeオブジェクトでないとだめです。");
-    info.GetReturnValue().Set(Nan::New(false));
+    info.GetReturnValue().Set(false);
     return;
   }
   NetStream* stream = Nan::ObjectWrap::Unwrap<NetStream>(info.Holder());
+  if(!ttLibC_RtmpStream_addFrame(
+      stream->stream_,
+      Frame::refFrame(info[0]->ToObject()))) {
+    info.GetReturnValue().Set(false);
+  }
 /*
   ttLibC_Frame *frame = stream->frameManager_->getFrame(info[0]->ToObject());
   if(frame == NULL) {
