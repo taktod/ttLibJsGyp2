@@ -186,19 +186,6 @@ NAN_METHOD(NetStream::QueueFrame) {
       Frame::refFrame(info[0]->ToObject()))) {
     info.GetReturnValue().Set(false);
   }
-/*
-  ttLibC_Frame *frame = stream->frameManager_->getFrame(info[0]->ToObject());
-  if(frame == NULL) {
-    puts("frameを復元できなかった。");
-    info.GetReturnValue().Set(Nan::New(false));
-    return;
-  }
-  if(!ttLibC_RtmpStream_addFrame(
-      stream->stream_,
-      frame)) {
-    info.GetReturnValue().Set(Nan::New(false));
-    return;
-  }*/
   info.GetReturnValue().Set(Nan::New(true));
 }
 
