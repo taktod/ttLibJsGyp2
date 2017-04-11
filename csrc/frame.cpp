@@ -247,6 +247,13 @@ ttLibC_Frame *Frame::refFrame(Local<Object> jsFrame) {
 }
 
 NAN_METHOD(Frame::New) {
+  /*
+  何もないところからつくって　-> ttLibC_Frameを追加して扱う
+  JsのFrameオブジェクトから、内部のttLibC_Frameのcloneをつくって、それを利用するものを作っておいたら幸せになれそうではある。
+  コンストラクタではなくて、cloneというメソッドを準備しておく方がいいかな。
+  BinaryデータからFrameオブジェクトを復元する動作もほしい。
+  これもFrameを空から再生成して・・・とした方がいいかね。
+   */
   if(info.IsConstructCall()) {
     Frame *frame = new Frame();
     frame->Wrap(info.This());
