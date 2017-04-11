@@ -11,6 +11,7 @@ void Frame::classInit(Local<Object> target) {
   tpl->SetClassName(Nan::New("Frame").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   SetPrototypeMethod(tpl, "getBinaryBuffer", GetBinaryBuffer);
+  SetPrototypeMethod(tpl, "clone", Clone);
 
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
@@ -273,6 +274,15 @@ NAN_METHOD(Frame::GetBinaryBuffer) {
   info.GetReturnValue().Set(Nan::CopyBuffer((char *)frame->frame_->data, frame->frame_->buffer_size).ToLocalChecked());
 }
 
+NAN_METHOD(Frame::Clone) {
+  Frame *frame = Nan::ObjectWrap::Unwrap<Frame>(info.Holder());
+  Local<Object> jsFrame = Frame::newInstance();
+  Frame::setFrame(jsFrame, ttLibC_Frame_clone(NULL, frame->frame_));
+  Frame *newFrame = Nan::ObjectWrap::Unwrap<Frame>(jsFrame);
+  newFrame->isRef_ = false;
+  info.GetReturnValue().Set(jsFrame);
+}
+
 Frame::Frame() {
   frame_ = NULL;
   isRef_ = false;
@@ -280,6 +290,7 @@ Frame::Frame() {
 
 Frame::~Frame() {
   if(!isRef_) {
+    puts("解放します。");
     ttLibC_Frame_close(&frame_);
   }
 }

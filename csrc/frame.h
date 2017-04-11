@@ -17,6 +17,7 @@ public:
 private:
   static NAN_METHOD(New);
   static NAN_METHOD(GetBinaryBuffer);
+  static NAN_METHOD(Clone);
 
   static inline Nan::Persistent<Function> & constructor() {
     static Nan::Persistent<Function> my_constructor;
