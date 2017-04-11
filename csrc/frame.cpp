@@ -10,6 +10,7 @@ void Frame::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Frame").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
+  SetPrototypeMethod(tpl, "getBinaryBuffer", GetBinaryBuffer);
 
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
@@ -257,7 +258,12 @@ NAN_METHOD(Frame::New) {
 }
 
 NAN_METHOD(Frame::GetBinaryBuffer) {
-
+  Frame *frame = Nan::ObjectWrap::Unwrap<Frame>(info.Holder());
+  if(frame->frame_ == NULL) {
+    info.GetReturnValue().Set(Nan::Null());
+    return;
+  }
+  info.GetReturnValue().Set(Nan::CopyBuffer((char *)frame->frame_->data, frame->frame_->buffer_size).ToLocalChecked());
 }
 
 Frame::Frame() {

@@ -88,6 +88,7 @@ var jpegEncoder = new tt.encoder.JpegEncoder(
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
     if(frame.type == "h264") {
+      console.log(frame.getBinaryBuffer());
       return videoDecoder.decode(frame, (err, frame) => {
 /*        return openh264Encoder.encode(frame, (err, frame) => {
           console.log(frame);
