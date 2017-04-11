@@ -134,7 +134,7 @@ bool Reader::frameCallback(
     void *ptr,
     ttLibC_Frame *ttFrame) {
   Reader       *reader   = (Reader *)ptr;
-  auto          callback = new Nan::Callback(reader->callback_.As<Function>());
+  Nan::Callback callback(reader->callback_.As<Function>());
   Local<Object> jsFrame;
   if(ttLibC_Frame_isAudio(ttFrame)) {
     jsFrame = Nan::New(reader->jsAudioFrame_);
@@ -147,7 +147,7 @@ bool Reader::frameCallback(
     Nan::Null(),
     jsFrame // あとはここにframe情報をうまく折り込めばOKの予定だが・・・
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

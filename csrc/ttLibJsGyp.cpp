@@ -7,6 +7,8 @@ using namespace v8;
 #include "decoder.h"
 #include "encoder.h"
 #include "resampler.h"
+#include "rtmp/netStream.h"
+#include "rtmp/netConnection.h"
 #include "frame.h"
 
 static NAN_MODULE_INIT(Init) {
@@ -15,6 +17,8 @@ static NAN_MODULE_INIT(Init) {
   Decoder::classInit(target);
   Encoder::classInit(target);
   Resampler::classInit(target);
+  NetConnection::classInit(target);
+  NetStream::classInit(target);
   Frame::classInit(target);
 }
 

@@ -18,14 +18,14 @@ SoundtouchResampler::~SoundtouchResampler() {
 
 bool SoundtouchResampler::resampleCallback(void *ptr, ttLibC_Audio *audio) {
   SoundtouchResampler *resampler = (SoundtouchResampler *)ptr;
-  auto callback = new Nan::Callback(resampler->callback_.As<Function>());
+  Nan::Callback callback(resampler->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(resampler->jsFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)audio);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

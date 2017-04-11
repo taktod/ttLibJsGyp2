@@ -72,14 +72,14 @@ bool ImageResampler::resample(ttLibC_Frame *ttFrame) {
     puts("想定外の変換でした。処理を中断します。");
     return false;
   }
-  auto callback = new Nan::Callback(callback_.As<Function>());
+  Nan::Callback callback(callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(jsFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)prevFrame_);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

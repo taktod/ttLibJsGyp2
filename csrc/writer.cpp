@@ -180,13 +180,13 @@ bool Writer::writeCallback(
     size_t data_size) {
   // あとはこのデータをcallbackで応答すればよい。
   Writer       *writer   = (Writer *)ptr;
-  auto          callback = new Nan::Callback(writer->callback_.As<Function>());
+  Nan::Callback callback(writer->callback_.As<Function>());
   Local<Object> binary   = Nan::CopyBuffer((char *)data, data_size).ToLocalChecked();
   Local<Value>  args[]   = {
     Nan::Null(),
     binary
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

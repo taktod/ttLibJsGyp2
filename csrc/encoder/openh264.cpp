@@ -58,14 +58,14 @@ Openh264Encoder::~Openh264Encoder() {
 
 bool Openh264Encoder::encodeCallback(void *ptr, ttLibC_H264 *h264) {
   Openh264Encoder *encoder = (Openh264Encoder *)ptr;
-  auto callback = new Nan::Callback(encoder->callback_.As<Function>());
+  Nan::Callback callback(encoder->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)h264);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

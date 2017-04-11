@@ -23,14 +23,14 @@ Mp3lameEncoder::~Mp3lameEncoder() {
 
 bool Mp3lameEncoder::encodeCallback(void *ptr, ttLibC_Mp3 *mp3) {
   Mp3lameEncoder *encoder = (Mp3lameEncoder *)ptr;
-  auto callback = new Nan::Callback(encoder->callback_.As<Function>());
+  Nan::Callback callback(encoder->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)mp3);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

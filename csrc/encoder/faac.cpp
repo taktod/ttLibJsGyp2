@@ -35,14 +35,14 @@ FaacEncoder::~FaacEncoder() {
 
 bool FaacEncoder::encodeCallback(void *ptr, ttLibC_Aac *aac) {
   FaacEncoder *encoder = (FaacEncoder *)ptr;
-  auto callback = new Nan::Callback(encoder->callback_.As<Function>());
+  Nan::Callback callback(encoder->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)aac);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

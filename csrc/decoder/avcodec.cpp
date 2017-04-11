@@ -37,14 +37,14 @@ AvcodecDecoder::~AvcodecDecoder() {
 
 bool AvcodecDecoder::decodeCallback(void *ptr, ttLibC_Frame *ttFrame) {
   AvcodecDecoder *decoder = (AvcodecDecoder *)ptr;
-  auto callback = new Nan::Callback(decoder->callback_.As<Function>());
+  Nan::Callback callback(decoder->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(decoder->jsFrame_);
   Frame::setFrame(jsFrame, ttFrame);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }

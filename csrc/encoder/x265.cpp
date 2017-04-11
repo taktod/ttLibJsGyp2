@@ -47,14 +47,14 @@ X265Encoder::~X265Encoder() {
 
 bool X265Encoder::encodeCallback(void *ptr, ttLibC_H265 *h265) {
   X265Encoder *encoder = (X265Encoder *)ptr;
-  auto callback = new Nan::Callback(encoder->callback_.As<Function>());
+  Nan::Callback callback(encoder->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)h265);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
   };
-  Local<Value> result = callback->Call(2, args);
+  Local<Value> result = callback.Call(2, args);
   if(result->IsTrue()) {
     return true;
   }
