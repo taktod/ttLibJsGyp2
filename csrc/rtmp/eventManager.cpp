@@ -62,6 +62,7 @@ void EventManager::addEventListener(
         return;
       }
       event = (rtmpEventList_t *)ttLibC_malloc(sizeof(rtmpEventList_t));
+      memset(event, 0, sizeof(rtmpEventList_t));
       String::Utf8Value str(info[0]->ToString());
       strncpy(event->name, (const char *)*str, strlen((const char *)*str));
       event->callback = new Nan::Callback(info[1].As<Function>());
@@ -84,10 +85,10 @@ void EventManager::addEventListener(
       event = (rtmpEventList_t *)ttLibC_malloc(sizeof(rtmpEventList_t));
       strncpy(event->name, "onFrame", strlen("onFrame"));
       event->callback = new Nan::Callback(info[0].As<Function>());
+      event->baseObject = baseObject;
+      ttLibC_StlList_addLast(eventList_, event);
     }
     break;
   }
-  event->baseObject = baseObject;
-  ttLibC_StlList_addLast(eventList_, event);
   info.GetReturnValue().Set(true);
 }

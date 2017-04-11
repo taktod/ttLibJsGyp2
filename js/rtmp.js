@@ -34,22 +34,32 @@ var startTime = 0;
 nc.addEventListener("onStatusEvent", (event) => {
   switch(event.info.code) {
   case "NetConnection.Connect.Success":
+    console.log("コネクト作成した。");
     ns = new tt.rtmp.NetStream(nc);
-    ns.publish("test");
     ns.addEventListener("onStatusEvent", (event) => {
+      console.log(event.info.code);
       if(event.info.code == "NetStream.Publish.Start") {
+        startTime = new Date().getTime();
+        setInterval(() => {
+          var currentTime = new Date().getTime() - startTime;
+          console.log(currentTime);
+          while(frames.length > 0) {
+            var frame = frames.shift();
+            ns.queueFrame(frame);
+            if(frame.pts > currentTime) {
+              break;
+            }
+          }
+        }, 1000);
         readableStream.on("data", (data) => {
           reader.readFrame(data, (err, frame) => {
-            // 本来なら、frameをためて、タイミングをあわせて送信するようにしなければならない。
-            // 前のttLibJsGypだったら、frameデータが完全コピーなので、cacheしたりできるけど、
-            // 今回の動作だと内部でttLibC_Frameのオブジェクトが読み込みを実施するたびに更新されるので
-            // できなくなってる
-            ns.queueFrame(frame);
+            frames.push(frame.clone());
             return true;
           });
         });
       }
     });
+    ns.publish("test");
     break;
   default:
     break;
