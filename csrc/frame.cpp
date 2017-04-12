@@ -1,4 +1,5 @@
-﻿#include "frame.h"
+﻿#include "predef.h"
+#include "frame.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +7,7 @@
 #include <ttLibC/frame/audio/audio.h>
 #include <ttLibC/frame/video/video.h>
 
-void Frame::classInit(Local<Object> target) {
+void CDECL Frame::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Frame").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

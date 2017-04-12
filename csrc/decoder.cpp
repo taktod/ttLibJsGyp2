@@ -1,4 +1,5 @@
-﻿#include "decoder.h"
+﻿#include "predef.h"
+#include "decoder.h"
 #include "frame.h"
 
 #include "decoder/avcodec.h"
@@ -15,7 +16,7 @@ private:
   ~DummyDecoder() {}
 };
 
-void Decoder::classInit(Local<Object> target) {
+void CDECL Decoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Decoder").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

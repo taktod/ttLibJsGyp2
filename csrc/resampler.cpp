@@ -1,4 +1,5 @@
-﻿#include "resampler.h"
+﻿#include "predef.h"
+#include "resampler.h"
 #include "frame.h"
 
 #include "resampler/audio.h"
@@ -18,7 +19,7 @@ private:
   ~DummyResampler() {}
 };
 
-void Resampler::classInit(Local<Object> target) {
+void CDECL Resampler::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Resampler").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

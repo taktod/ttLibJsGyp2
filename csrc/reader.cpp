@@ -1,9 +1,10 @@
-﻿#include "reader.h"
+﻿#include "predef.h"
+#include "reader.h"
 #include "frame.h"
 
 #include <string>
 
-void Reader::classInit(Local<Object> target) {
+void CDECL Reader::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Reader").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

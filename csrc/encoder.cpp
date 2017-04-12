@@ -1,4 +1,5 @@
-﻿#include "encoder.h"
+﻿#include "predef.h"
+#include "encoder.h"
 #include "frame.h"
 
 #include "encoder/audioConverter.h"

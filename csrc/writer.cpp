@@ -1,9 +1,10 @@
-﻿#include "writer.h"
+﻿#include "predef.h"
+#include "writer.h"
 #include "frame.h"
 
 #include <string>
 
-void Writer::classInit(Local<Object> target) {
+void CDECL Writer::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Writer").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
