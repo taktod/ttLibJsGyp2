@@ -32,13 +32,14 @@ static bool clearFrameStack(void *ptr, void *item) {
 VtCompressSessionEncoder::~VtCompressSessionEncoder() {
 #ifdef __ENABLE_APPLE__
   ttLibC_VtEncoder_close(&encoder_);
-#endif
   pthread_mutex_destroy(&frameMutex_);
   ttLibC_StlList_forEach(frameStack_, clearFrameStack, NULL);
   ttLibC_StlList_close(&frameStack_);
+#endif
 }
 
 bool VtCompressSessionEncoder::encodeCallback(void *ptr, ttLibC_Video *video) {
+#ifdef __ENABLE_APPLE__
   VtCompressSessionEncoder *encoder = (VtCompressSessionEncoder *)ptr;
   // ここからcallするとsegfaultが発生するの？どういうこと？
   // ということは、こうじゃなくて、AsyncWorkerのスレッドでvtCompressSessionとか呼び出しを実施するように改良しないとだめだな。
@@ -52,6 +53,7 @@ bool VtCompressSessionEncoder::encodeCallback(void *ptr, ttLibC_Video *video) {
   if(r != 0) {
     puts("unlockエラー");
   }
+#endif
   return true;
 }
 
