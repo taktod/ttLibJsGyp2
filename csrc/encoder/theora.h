@@ -1,4 +1,4 @@
-#ifndef CSRC_ENCODER_THEORA_H
+﻿#ifndef CSRC_ENCODER_THEORA_H
 #define CSRC_ENCODER_THEORA_H
 
 #include "../encoder.h"

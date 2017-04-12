@@ -1,4 +1,4 @@
-#include "amf0Helper.h"
+﻿#include "amf0Helper.h"
 
 Local<Value> makeJsObject_from_ttLibCAmf0(ttLibC_Amf0Object *src_obj) {
   switch(src_obj->type) {

@@ -1,4 +1,4 @@
-#ifndef CSRC_WRITER_H
+﻿#ifndef CSRC_WRITER_H
 #define CSRC_WRITER_H
 
 #include <nan.h>

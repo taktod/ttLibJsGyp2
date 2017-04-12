@@ -1,4 +1,4 @@
-#ifndef CSRC_RTMP_RTMPCLIENTBASE_H
+﻿#ifndef CSRC_RTMP_RTMPCLIENTBASE_H
 #define CSRC_RTMP_RTMPCLIENTBASE_H
 
 #include <nan.h>

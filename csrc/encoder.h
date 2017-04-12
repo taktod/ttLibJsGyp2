@@ -1,4 +1,4 @@
-#ifndef CSRC_ENCODER_H
+﻿#ifndef CSRC_ENCODER_H
 #define CSRC_ENCODER_H
 
 #include <nan.h>

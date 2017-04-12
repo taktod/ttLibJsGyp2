@@ -1,7 +1,6 @@
-#include "vtCompressSession.h"
+﻿#include "vtCompressSession.h"
 #include "../frame.h"
 #include <ttLibC/frame/video/h264.h>
-#include <sys/sem.h> // windowsで使えるのかしら・・・
 
 VtCompressSessionEncoder::VtCompressSessionEncoder(Local<Object> params) : Encoder() {
   type_ = get_vtCompressSession;

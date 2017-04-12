@@ -1,4 +1,4 @@
-#include "theora.h"
+﻿#include "theora.h"
 #include "../frame.h"
 
 TheoraEncoder::TheoraEncoder(Local<Object> params) : Encoder() {

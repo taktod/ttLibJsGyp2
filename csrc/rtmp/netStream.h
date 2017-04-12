@@ -1,4 +1,4 @@
-#ifndef CSRC_RTMP_NETSTREAM_H
+﻿#ifndef CSRC_RTMP_NETSTREAM_H
 #define CSRC_RTMP_NETSTREAM_H
 
 #include "eventManager.h"

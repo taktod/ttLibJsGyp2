@@ -1,4 +1,4 @@
-#ifndef CSRC_RESAMPLER_H
+﻿#ifndef CSRC_RESAMPLER_H
 #define CSRC_RESAMPLER_H
 
 #include <nan.h>

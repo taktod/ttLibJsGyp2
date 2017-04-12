@@ -1,4 +1,4 @@
-#include "eventManager.h"
+﻿#include "eventManager.h"
 #include <ttLibC/allocator.h>
 
 static bool doEachCallback(void *ptr, void *item) {

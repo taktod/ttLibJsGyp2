@@ -1,4 +1,4 @@
-#include "avcodec.h"
+﻿#include "avcodec.h"
 #include "../frame.h"
 
 AvcodecDecoder::AvcodecDecoder(Local<Object> params) : Decoder() {

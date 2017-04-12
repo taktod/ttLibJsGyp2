@@ -1,4 +1,4 @@
-#include "resampler.h"
+﻿#include "resampler.h"
 #include "frame.h"
 
 #include "resampler/audio.h"

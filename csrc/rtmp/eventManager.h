@@ -1,4 +1,4 @@
-#ifndef CSRC_RTMP_EVENTMANAGER_H
+﻿#ifndef CSRC_RTMP_EVENTMANAGER_H
 #define CSRC_RTMP_EVENTMANAGER_H
 
 #include "rtmpClientBase.h"

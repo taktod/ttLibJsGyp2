@@ -1,4 +1,4 @@
-#include "rtmpEventWorker.h"
+﻿#include "rtmpEventWorker.h"
 
 RtmpEventWorker::RtmpEventWorker(EventManager *eventManager) : 
   Nan::AsyncWorker(NULL), manager_(eventManager) {

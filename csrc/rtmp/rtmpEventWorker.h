@@ -1,4 +1,4 @@
-#ifndef CSRC_RTMP_RTMPEVENTWORKER_H
+﻿#ifndef CSRC_RTMP_RTMPEVENTWORKER_H
 #define CSRC_RTMP_RTMPEVENTWORKER_H
 
 #include "eventManager.h"

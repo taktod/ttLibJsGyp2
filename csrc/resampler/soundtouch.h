@@ -1,4 +1,4 @@
-#ifndef CSRC_RESAMPLER_SOUNDTOUCH_H
+﻿#ifndef CSRC_RESAMPLER_SOUNDTOUCH_H
 #define CSRC_RESAMPLER_SOUNDTOUCH_H
 
 #include "../resampler.h"

@@ -1,4 +1,4 @@
-#ifndef CSRC_RESAMPLER_SPEEXDSP_H
+﻿#ifndef CSRC_RESAMPLER_SPEEXDSP_H
 #define CSRC_RESAMPLER_SPEEXDSP_H
 
 #include "../resampler.h"

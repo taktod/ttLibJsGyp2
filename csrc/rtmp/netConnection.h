@@ -1,4 +1,4 @@
-#ifndef CSRC_RTMP_NETCONNECTION_H
+﻿#ifndef CSRC_RTMP_NETCONNECTION_H
 #define CSRC_RTMP_NETCONNECTION_H
 
 #include "eventManager.h"

@@ -1,4 +1,4 @@
-#ifndef CSRC_READER_H
+﻿#ifndef CSRC_READER_H
 #define CSRC_READER_H
 
 #include <nan.h>

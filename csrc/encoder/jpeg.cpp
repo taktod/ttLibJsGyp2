@@ -1,4 +1,4 @@
-#include "jpeg.h"
+﻿#include "jpeg.h"
 #include "../frame.h"
 
 JpegEncoder::JpegEncoder(Local<Object> params) : Encoder() {

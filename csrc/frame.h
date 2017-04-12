@@ -1,4 +1,4 @@
-#ifndef CSRC_FRAME_H
+﻿#ifndef CSRC_FRAME_H
 #define CSRC_FRAME_H
 
 #include <nan.h>

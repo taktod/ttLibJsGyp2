@@ -1,4 +1,4 @@
-#include "netConnection.h"
+﻿#include "netConnection.h"
 #include "netStream.h"
 #include "amf0Helper.h"
 #include "../frame.h"

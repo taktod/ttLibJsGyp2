@@ -1,4 +1,4 @@
-#ifndef CSRC_ENCODER_FAAC_H
+﻿#ifndef CSRC_ENCODER_FAAC_H
 #define CSRC_ENCODER_FAAC_H
 
 #include "../encoder.h"

@@ -1,4 +1,4 @@
-#ifndef CSRC_DECODER_AVCODEC_H
+﻿#ifndef CSRC_DECODER_AVCODEC_H
 #define CSRC_DECODER_AVCODEC_H
 
 #include "../decoder.h"

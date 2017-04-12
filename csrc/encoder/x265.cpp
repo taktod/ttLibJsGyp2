@@ -1,4 +1,4 @@
-#include "x265.h"
+﻿#include "x265.h"
 #include "../frame.h"
 #ifdef __ENABLE_X265__
 # include <x265.h>

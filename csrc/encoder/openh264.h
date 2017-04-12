@@ -1,4 +1,4 @@
-#ifndef CSRC_ENCODER_OPENH264_H
+﻿#ifndef CSRC_ENCODER_OPENH264_H
 #define CSRC_ENCODER_OPENH264_H
 
 #include "../encoder.h"

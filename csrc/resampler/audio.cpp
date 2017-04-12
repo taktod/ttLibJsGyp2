@@ -1,4 +1,4 @@
-#include "audio.h"
+﻿#include "audio.h"
 #include "../frame.h"
 
 #include <ttLibC/resampler/audioResampler.h>

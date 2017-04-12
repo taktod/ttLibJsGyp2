@@ -1,4 +1,4 @@
-#include "soundtouch.h"
+﻿#include "soundtouch.h"
 #include "../frame.h"
 
 SoundtouchResampler::SoundtouchResampler(Local<Object> params) : Resampler() {

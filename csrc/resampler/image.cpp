@@ -1,4 +1,4 @@
-#include "image.h"
+﻿#include "image.h"
 #include "../frame.h"
 
 #include <ttLibC/resampler/imageResampler.h>
