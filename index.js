@@ -66,6 +66,9 @@ module.exports = {
     TheoraEncoder: function(width, height, quality, bitrate, keyFrameInterval) {
       return ttLibJsGyp.Encoder.apply(null, ["theora", {width: width, height: height, quality: quality, bitrate: bitrate, keyFrameInterval: keyFrameInterval}]);
     },
+    VtCompressSessionEncoder: function(type, width, height, fps=15, bitrate=320000, isBaseline=true) {
+      return ttLibJsGyp.Encoder.apply(null, ["vtCompressSession", {type: type, width: width, height: height, fps: fps, bitrate: bitrate, isBaseline: isBaseline}]);
+    },
     X264Encoder: function(width, height, preset="", tune="", profile="", param={}) {
       if(!profile || profile == "") {
         profile = "baseline";

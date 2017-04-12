@@ -84,11 +84,13 @@ var imageResampler = new tt.resampler.ImageResampler(
   "bgr", "bgr");
 var jpegEncoder = new tt.encoder.JpegEncoder(
   640, 360, 90);
+var vtEncoder = new tt.encoder.VtCompressSessionEncoder(
+  "h264", 640, 360
+);
 
 readableStream.on("data", (data) => {
   if(!reader.readFrame(data, (err, frame) => {
     if(frame.type == "h264") {
-      console.log(frame.getBinaryBuffer());
       return videoDecoder.decode(frame, (err, frame) => {
 /*        return openh264Encoder.encode(frame, (err, frame) => {
           console.log(frame);
@@ -109,11 +111,15 @@ readableStream.on("data", (data) => {
 /*        return imageResampler.resample(frame, (err, frame) => {
           console.log(frame);
           return true;
-        })*/
-        return jpegEncoder.encode(frame, (err, frame) => {
+        });*/
+/*        return jpegEncoder.encode(frame, (err, frame) => {
           console.log(frame);
           return true;
-        })
+        });*/
+        return vtEncoder.encode(frame, (err, frame) => {
+          console.log(frame);
+          return true;
+        });
       });
     }
     else {

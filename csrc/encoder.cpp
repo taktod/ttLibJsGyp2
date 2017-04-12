@@ -8,6 +8,7 @@
 #include "encoder/openh264.h"
 #include "encoder/opus.h"
 #include "encoder/theora.h"
+#include "encoder/vtCompressSession.h"
 #include "encoder/x264.h"
 #include "encoder/x265.h"
 
@@ -67,6 +68,9 @@ NAN_METHOD(Encoder::New) {
     }
     else if(type == "theora") {
       encoder = new TheoraEncoder(info[1]->ToObject());
+    }
+    else if(type == "vtCompressSession") {
+      encoder = new VtCompressSessionEncoder(info[1]->ToObject());
     }
     else if(type == "x264") {
       encoder = new X264Encoder(info[1]->ToObject());
