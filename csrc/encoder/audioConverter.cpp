@@ -1,29 +1,6 @@
 #include "audioConverter.h"
 #include "../frame.h"
 
-class FramePassingWorker : public Nan::AsyncWorker {
-public:
-  FramePassingWorker(
-      ttLibC_Frame *frame,
-      AudioConverterEncoder *encoder) :
-        Nan::AsyncWorker(NULL),
-        encoder_(encoder) {
-    frame_ = ttLibC_Frame_clone(NULL, frame);
-  }
-  void Execute() {
-
-  }
-  void HandleOKCallback() {
-    encoder_->asyncCallback(frame_);
-  }
-private:
-  ~FramePassingWorker() {
-    ttLibC_Frame_close(&frame_);
-  }
-  AudioConverterEncoder *encoder_;
-  ttLibC_Frame *frame_;
-};
-
 AudioConverterEncoder::AudioConverterEncoder(Local<Object> params) : Encoder() {
   type_ = get_audioConverter;
 #ifdef __ENABLE_APPLE__
@@ -46,14 +23,13 @@ AudioConverterEncoder::~AudioConverterEncoder() {
 #ifdef __ENABLE_APPLE__
   ttLibC_AcEncoder_close(&encoder_);
 #endif
-  strongCallback_.Reset();
 }
 
-bool AudioConverterEncoder::asyncCallback(ttLibC_Frame *frame) {
-  Local<Value> call = Nan::New(strongCallback_);
-  Nan::Callback callback(call.As<Function>());
-  Local<Object> jsFrame = Nan::New(jsFrame_);
-  Frame::setFrame(jsFrame, frame);
+bool AudioConverterEncoder::encodeCallback(void *ptr, ttLibC_Audio *audio) {
+  AudioConverterEncoder *encoder = (AudioConverterEncoder *)ptr;
+  Nan::Callback callback(encoder->callback_.As<Function>());
+  Local<Object> jsFrame = Nan::New(encoder->jsFrame_);
+  Frame::setFrame(jsFrame, (ttLibC_Frame *)audio);
   Local<Value> args[] = {
     Nan::Null(),
     jsFrame
@@ -68,14 +44,6 @@ bool AudioConverterEncoder::asyncCallback(ttLibC_Frame *frame) {
   return false;
 }
 
-bool AudioConverterEncoder::encodeCallback(void *ptr, ttLibC_Audio *audio) {
-  AudioConverterEncoder *encoder = (AudioConverterEncoder *)ptr;
-  Nan::AsyncQueueWorker(new FramePassingWorker(
-    (ttLibC_Frame *)audio,
-    encoder));
-  return true;
-}
-
 bool AudioConverterEncoder::encode(ttLibC_Frame *frame) {
 #ifdef __ENABLE_APPLE__
   if(encoder_ == NULL) {
@@ -86,7 +54,6 @@ bool AudioConverterEncoder::encode(ttLibC_Frame *frame) {
     puts("pcmS16のみ処理可能です。");
     return false;
   }
-  strongCallback_.Reset(callback_); // 普通のcallbackをそのまま使うとLocal<Object>が蒸発するので、不可能になる。 Persistentにいれて、蒸発しないようにしておく。
   return ttLibC_AcEncoder_encode(
     encoder_,
     (ttLibC_PcmS16 *)frame,

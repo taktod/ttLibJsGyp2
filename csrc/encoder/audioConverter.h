@@ -11,14 +11,12 @@ class AudioConverterEncoder : public Encoder {
 public:
   AudioConverterEncoder(Local<Object> params);
   bool encode(ttLibC_Frame *frame);
-  bool asyncCallback(ttLibC_Frame *frame);
 private:
   static bool encodeCallback(void *ptr, ttLibC_Audio *frame);
   ~AudioConverterEncoder();
 #ifdef __ENABLE_APPLE__
   ttLibC_AcEncoder *encoder_;
 #endif
-  Nan::Persistent<Value> strongCallback_;
 };
 
 #endif
