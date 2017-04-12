@@ -60,29 +60,43 @@ bool SoundtouchResampler::resample(ttLibC_Frame *frame) {
 }
 
 void SoundtouchResampler::setRate(double newRate) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setRate(resampler_, newRate);
+#endif
 }
 
 void SoundtouchResampler::setTempo(double newTempo) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setTempo(resampler_, newTempo);
+#endif
 }
 
 void SoundtouchResampler::setRateChange(double newRate) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setRateChange(resampler_, newRate);
+#endif
 }
 
 void SoundtouchResampler::setTempoChange(double newTempo) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setTempoChange(resampler_, newTempo);
+#endif
 }
 
 void SoundtouchResampler::setPitch(double newPitch) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setPitch(resampler_, newPitch);
+#endif
 }
 
 void SoundtouchResampler::setPitchOctaves(double newPitch) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setPitchOctaves(resampler_, newPitch);
+#endif
 }
 
 void SoundtouchResampler::setPitchSemiTones(double newPitch) {
+#ifdef __ENABLE_SOUNDTOUCH__
   ttLibC_Soundtouch_setPitchSemiTones(resampler_, newPitch);
+#endif
 }
