@@ -1,6 +1,7 @@
 #include "encoder.h"
 #include "frame.h"
 
+#include "encoder/audioConverter.h"
 #include "encoder/faac.h"
 #include "encoder/mp3lame.h"
 #include "encoder/jpeg.h"
@@ -46,7 +47,10 @@ NAN_METHOD(Encoder::New) {
     // ここでどのcodecの動作であるか判定しなければいけないな。
     std::string type(*String::Utf8Value(info[0]->ToString()));
     Encoder *encoder = NULL;
-    if(type == "faac") {
+    if(type == "audioConverter") {
+      encoder = new AudioConverterEncoder(info[1]->ToObject());
+    }
+    else if(type == "faac") {
       encoder = new FaacEncoder(info[1]->ToObject());
     }
     else if(type == "mp3lame") {

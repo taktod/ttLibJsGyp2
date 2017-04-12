@@ -45,6 +45,9 @@ module.exports = {
     }
   },
   encoder: {
+    AudioConverterEncoder: function(type, sampleRate, channelNum, bitrate) {
+      return ttLibJsGyp.Encoder.apply(null, ["audioConverter", {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
+    },
     FaacEncoder: function(type, sampleRate, channelNum, bitrate) {
       return ttLibJsGyp.Encoder.apply(null, ["faac", {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
     },
