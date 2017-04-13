@@ -10,7 +10,7 @@ typedef struct rtmpEventList_t rtmpEventList_t;
 class RtmpClientBase : public Nan::ObjectWrap {
 public:
   virtual void doUpdate() = 0;
-  virtual void doCallback(rtmpEventList_t *event);
+  virtual void doCallback(rtmpEventList_t *event) = 0;
   bool isCalled_;
 };
 
