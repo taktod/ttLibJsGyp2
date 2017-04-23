@@ -80,14 +80,8 @@
         "ttLibC/ttLibC/frame/video/wmv1.c",
         "ttLibC/ttLibC/frame/video/wmv2.c",
         "ttLibC/ttLibC/frame/video/yuv420.c",
-        "ttLibC/ttLibC/net/net.c",
-        "ttLibC/ttLibC/net/tcp.c",
-        "ttLibC/ttLibC/net/udp.c",
-        "ttLibC/ttLibC/net/tetty/bootstrap.c",
         "ttLibC/ttLibC/net/tetty/context.c",
         "ttLibC/ttLibC/net/tetty/promise.c",
-        "ttLibC/ttLibC/net/client/rtmp/rtmpConnection.c",
-        "ttLibC/ttLibC/net/client/rtmp/rtmpStream.c",
         "ttLibC/ttLibC/net/client/rtmp/data/clientObject.c",
         "ttLibC/ttLibC/net/client/rtmp/header/rtmpHeader.c",
         "ttLibC/ttLibC/net/client/rtmp/message/acknowledgement.c",
@@ -101,8 +95,6 @@
         "ttLibC/ttLibC/net/client/rtmp/message/userControlMessage.c",
         "ttLibC/ttLibC/net/client/rtmp/message/videoMessage.c",
         "ttLibC/ttLibC/net/client/rtmp/message/windowAcknowledgementSize.c",
-        "ttLibC/ttLibC/net/client/rtmp/tetty/rtmpClientHandler.c",
-        "ttLibC/ttLibC/net/client/rtmp/tetty/rtmpCommandHandler.c",
         "ttLibC/ttLibC/net/client/rtmp/tetty/rtmpDecoder.c",
         "ttLibC/ttLibC/net/client/rtmp/tetty/rtmpEncoder.c",
         "ttLibC/ttLibC/net/client/rtmp/tetty/rtmpHandshake.c",
@@ -120,7 +112,11 @@
         "ttLibC/ttLibC/util/hexUtil.c",
         "ttLibC/ttLibC/util/ioUtil.c",
         "ttLibC/ttLibC/util/stlListUtil.cpp",
-        "ttLibC/ttLibC/util/stlMapUtil.cpp"
+        "ttLibC/ttLibC/util/stlMapUtil.cpp",
+        "csrc/ttLibC/net/tetty/bootstrap.cpp",
+        "csrc/ttLibC/net/client/rtmp/rtmpBootstrap.cpp",
+        "csrc/ttLibC/net/client/rtmp/tetty/rtmpClientHandler.cpp",
+        "csrc/ttLibC/net/client/rtmp/tetty/rtmpCommandHandler.cpp"
       ],
       "libraries": [
         '<!@(node libcheck.js libs)'
@@ -160,12 +156,7 @@
         "csrc/resampler/audio.cpp",
         "csrc/resampler/image.cpp",
         "csrc/resampler/soundtouch.cpp",
-        "csrc/resampler/speexdsp.cpp",
-        "csrc/rtmp/amf0Helper.cpp",
-        "csrc/rtmp/eventManager.cpp",
-        "csrc/rtmp/netConnection.cpp",
-        "csrc/rtmp/netStream.cpp",
-        "csrc/rtmp/rtmpEventWorker.cpp"
+        "csrc/resampler/speexdsp.cpp"
       ],
       "libraries": [
         '<!@(node libcheck.js libs)'

@@ -4,16 +4,16 @@ var fs = require("fs");
 var nc = new tt.rtmp.NetConnection();
 var ns = null;
 // 視聴動作の場合
-/*nc.addEventListener("onStatusEvent", (event) => {
+nc.on("onStatusEvent", (event) => {
   console.log(event);
   switch(event.info.code) {
   case "NetConnection.Connect.Success":
     ns = new tt.rtmp.NetStream(nc);
     ns.setBufferLength(2);
-    ns.addEventListener("onStatusEvent", (event) => {
+    ns.on("onStatusEvent", (event) => {
       console.log(event);
     });
-    ns.setFrameListener((err, frame) => {
+    ns.on("onFrameCallback", (err, frame) => {
       if(frame.type == "aac") {
         console.log(frame.type + " " + frame.pts);
       }
@@ -23,20 +23,20 @@ var ns = null;
   default:
     break;
   }
-});*/
-
+});
+/*
 // 配信動作の場合
 var reader = new tt.reader.FlvReader();
 var readableStream = fs.createReadStream(process.env.HOME + "/tools/data/source/test.h264.aac.flv");
 
 var frames = [];
 var startTime = 0;
-nc.addEventListener("onStatusEvent", (event) => {
+nc.on("onStatusEvent", (event) => {
   switch(event.info.code) {
   case "NetConnection.Connect.Success":
     console.log("コネクト作成した。");
     ns = new tt.rtmp.NetStream(nc);
-    ns.addEventListener("onStatusEvent", (event) => {
+    ns.on("onStatusEvent", (event) => {
       console.log(event.info.code);
       if(event.info.code == "NetStream.Publish.Start") {
         startTime = new Date().getTime();
@@ -65,5 +65,5 @@ nc.addEventListener("onStatusEvent", (event) => {
     break;
   }
 });
-
+*/
 nc.connect("rtmp://rtmpTestServer.com/live");

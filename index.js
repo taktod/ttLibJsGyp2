@@ -99,12 +99,5 @@ module.exports = {
       return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
     }
   },
-  rtmp: {
-    NetConnection: function() {
-      return ttLibJsGyp.NetConnection();
-    },
-    NetStream: function(nc) {
-      return ttLibJsGyp.NetStream(nc);
-    }
-  }
+  rtmp: require("./tsdist/rtmp")
 };
