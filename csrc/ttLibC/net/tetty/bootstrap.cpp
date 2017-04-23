@@ -9,6 +9,8 @@
 #include <ttLibC/allocator.h>
 #include <ttLibC/util/stlListUtil.h>
 
+#include <ttLibC/net/udp.h>
+
 Bootstrap::Bootstrap() {
   bootstrap_ = ttLibC_TettyBootstrap_make();
 }
@@ -241,13 +243,13 @@ tetty_errornum ttLibC_TettyBootstrap_channelEach_write(
 }
 
 static bool TettyBootstrap_channelEach_callPipelineFlush_callback(void *ptr, void *item) {
-	// call pipeline->flush
-	ttLibC_TettyContext_flush_((ttLibC_TettyBootstrap *)ptr, (ttLibC_SocketInfo *)item);
-	return true;
+  // call pipeline->flush
+  ttLibC_TettyContext_flush_((ttLibC_TettyBootstrap *)ptr, (ttLibC_SocketInfo *)item);
+  return true;
 }
 
 static bool TettyBootstrap_channelEach_flush_callback(void *ptr, void *item) {
-	(void)ptr;
+  (void)ptr;
   ttLibC_TcpClientInfo *client_info = (ttLibC_TcpClientInfo *)item;
   if(client_info->inherit_super.addr == NULL) {
     puts("addrがnullで動作できない。");
@@ -281,7 +283,7 @@ tetty_errornum ttLibC_TettyBootstrap_channels_flush(ttLibC_TettyBootstrap *boots
   // flushを全体に実行する。
   ttLibC_StlList_forEach(bootstrap_->tcp_client_info_list, TettyBootstrap_channelEach_callPipelineFlush_callback, bootstrap);
   // 実際のwriteをすべてのクライアントに対して実行する。
-	ttLibC_StlList_forEach(bootstrap_->tcp_client_info_list, TettyBootstrap_channelEach_flush_callback, NULL);
+  ttLibC_StlList_forEach(bootstrap_->tcp_client_info_list, TettyBootstrap_channelEach_flush_callback, NULL);
   return 0;
 }
 
@@ -289,34 +291,59 @@ tetty_errornum ttLibC_TettyBootstrap_channels_writeAndFlush(
     ttLibC_TettyBootstrap *bootstrap,
     void *data,
     size_t data_size) {
-	tetty_errornum error_num = ttLibC_TettyBootstrap_channels_write(bootstrap, data, data_size);
-	if(error_num != 0) {
-		return error_num;
-	}
-	error_num = ttLibC_TettyBootstrap_channels_flush(bootstrap);
-	return error_num;
+  tetty_errornum error_num = ttLibC_TettyBootstrap_channels_write(bootstrap, data, data_size);
+  if(error_num != 0) {
+    return error_num;
+  }
+  error_num = ttLibC_TettyBootstrap_channels_flush(bootstrap);
+  return error_num;
 }
 
 tetty_errornum ttLibC_TettyBootstrap_channelEach_writeAndFlush(
     ttLibC_TettyBootstrap *bootstrap,
     void *data,
     size_t data_size) {
-	tetty_errornum error_num = ttLibC_TettyBootstrap_channelEach_write(
-			bootstrap, data, data_size);
-	if(error_num != 0) {
-		return error_num;
-	}
-	error_num = ttLibC_TettyBootstrap_channels_flush(bootstrap);
-	return error_num;
+  tetty_errornum error_num = ttLibC_TettyBootstrap_channelEach_write(
+      bootstrap, data, data_size);
+  if(error_num != 0) {
+    return error_num;
+  }
+  error_num = ttLibC_TettyBootstrap_channels_flush(bootstrap);
+  return error_num;
 }
 
 ttLibC_TettyPromise *ttLibC_TettyBootstrap_makePromise(ttLibC_TettyBootstrap *bootstrap) {
-	if(bootstrap->error_number != 0) {
-		return NULL;
-	}
-	return ttLibC_TettyPromise_make_(bootstrap);
+  if(bootstrap->error_number != 0) {
+    return NULL;
+  }
+  return ttLibC_TettyPromise_make_(bootstrap);
 }
 
 ttLibC_TettyFuture *ttLibC_TettyBootstrap_closeFuture(ttLibC_TettyBootstrap *bootstrap) {
   return NULL;
 }
+
+// ttLibC/net/tetty/bootstrap.hより
+bool ttLibC_TettyBootstrap_closeClient_(
+    ttLibC_TettyBootstrap *bootstrap,
+    ttLibC_SocketInfo *socket_info) {return false;}
+
+// ttLibC/net/udp.hより
+ttLibC_UdpSocketInfo *ttLibC_UdpSocket_make(uint16_t port) {return NULL;}
+bool ttLibC_UdpSocket_open(ttLibC_UdpSocketInfo *socket_info) {return false;}
+bool ttLibC_UdpSocket_write(
+    ttLibC_UdpSocketInfo *socket_info,
+    ttLibC_DatagramPacket *packet) {return false;}
+int64_t ttLibC_UdpSocket_read(
+    ttLibC_UdpSocketInfo *socket_info,
+    ttLibC_DatagramPacket *packet) {return -1;}
+void ttLibC_UdpSocket_close(ttLibC_UdpSocketInfo **socket_info) {}
+ttLibC_DatagramPacket *ttLibC_DatagramPacket_make(
+    void *data,
+    size_t data_size) {return NULL;}
+ttLibC_DatagramPacket *ttLibC_DatagramPacket_makeWithTarget(
+    void *data,
+    size_t data_size,
+    const char *target_address,
+    int16_t target_port) {return NULL;}
+void ttLibC_DatagramPacket_close(ttLibC_DatagramPacket **packet) {}
