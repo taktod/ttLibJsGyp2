@@ -1,4 +1,4 @@
-// コマンド系の処理用
+﻿// コマンド系の処理用
 #include "rtmpCommandHandler.h"
 
 #include <ttLibC/log.h>

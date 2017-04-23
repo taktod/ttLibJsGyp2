@@ -1,4 +1,4 @@
-// tettyのbootstrapのnode実装
+﻿// tettyのbootstrapのnode実装
 // ここにnodeからアクセスすることにしようと思う。
 
 #include "../../../predef.h"
