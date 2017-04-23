@@ -43,6 +43,7 @@ private:
   }
 protected:
   Encoder();
+  virtual ~Encoder() {};
   virtual bool encode(ttLibC_Frame *frame) = 0;
   gypEncoderType_e        type_;
   Nan::Persistent<Object> jsFrame_;

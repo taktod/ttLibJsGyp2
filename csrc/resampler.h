@@ -34,6 +34,7 @@ private:
   }
 protected:
   Resampler();
+  virtual ~Resampler() {};
   virtual bool resample(ttLibC_Frame *frame) = 0;
   gypResamplerType_e      type_;
   Nan::Persistent<Object> jsFrame_;

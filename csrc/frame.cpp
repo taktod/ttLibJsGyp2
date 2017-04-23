@@ -291,7 +291,6 @@ Frame::Frame() {
 
 Frame::~Frame() {
   if(!isRef_) {
-    puts("解放します。");
     ttLibC_Frame_close(&frame_);
   }
 }
