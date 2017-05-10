@@ -245,6 +245,13 @@ ttLibC_Frame_Type Frame::getFrameType(std::string name) {
 
 ttLibC_Frame *Frame::refFrame(Local<Object> jsFrame) {
   Frame *frame = Nan::ObjectWrap::Unwrap<Frame>(jsFrame);
+  Local<Value> id       = Nan::Get(jsFrame, Nan::New("id").ToLocalChecked()).ToLocalChecked();
+  Local<Value> pts      = Nan::Get(jsFrame, Nan::New("pts").ToLocalChecked()).ToLocalChecked();
+  Local<Value> timebase = Nan::Get(jsFrame, Nan::New("timebase").ToLocalChecked()).ToLocalChecked();
+  frame->frame_->id = id->Uint32Value();
+  frame->frame_->pts = (uint64_t)pts->NumberValue();
+  frame->frame_->timebase = timebase->Uint32Value();
+  // まだまだ追加すべきデータがあるはず。strideとかdataPosとか
   return frame->frame_;
 }
 
