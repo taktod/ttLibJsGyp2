@@ -99,5 +99,6 @@ module.exports = {
       return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
     }
   },
+  Loopback: ttLibJsGyp.Loopback,
   rtmp: require("./tsdist/rtmp")
 };

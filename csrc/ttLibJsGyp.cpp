@@ -8,6 +8,7 @@ using namespace v8;
 #include "encoder.h"
 #include "resampler.h"
 #include "ttLibC/net/client/rtmp/rtmpBootstrap.h"
+#include "loopback.h"
 #include "frame.h"
 
 static NAN_MODULE_INIT(Init) {
@@ -16,6 +17,7 @@ static NAN_MODULE_INIT(Init) {
   Decoder::classInit(target);
   Encoder::classInit(target);
   Resampler::classInit(target);
+  Loopback::classInit(target);
   Frame::classInit(target);
   RtmpBootstrap::classInit(target);
 }

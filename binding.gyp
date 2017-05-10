@@ -116,7 +116,8 @@
         "csrc/ttLibC/net/tetty/bootstrap.cpp",
         "csrc/ttLibC/net/client/rtmp/rtmpBootstrap.cpp",
         "csrc/ttLibC/net/client/rtmp/tetty/rtmpClientHandler.cpp",
-        "csrc/ttLibC/net/client/rtmp/tetty/rtmpCommandHandler.cpp"
+        "csrc/ttLibC/net/client/rtmp/tetty/rtmpCommandHandler.cpp",
+        "csrc/ttLibC/util/mmAudioLoopbackUtil.cpp"
       ],
       "libraries": [
         '<!@(node libcheck.js libs)'
@@ -156,7 +157,8 @@
         "csrc/resampler/audio.cpp",
         "csrc/resampler/image.cpp",
         "csrc/resampler/soundtouch.cpp",
-        "csrc/resampler/speexdsp.cpp"
+        "csrc/resampler/speexdsp.cpp",
+        "csrc/loopback.cpp"
       ],
       "libraries": [
         '<!@(node libcheck.js libs)'
