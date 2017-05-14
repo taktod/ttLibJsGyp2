@@ -7,7 +7,7 @@
 #include <ttLibC/frame/audio/audio.h>
 #include <ttLibC/frame/video/video.h>
 
-void CDECL Frame::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL Frame::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Frame").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

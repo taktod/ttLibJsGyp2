@@ -18,7 +18,7 @@
 
 #include <ttLibC/util/amfUtil.h>
 
-void CDECL RtmpBootstrap::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL RtmpBootstrap::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("RtmpBootstrap").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

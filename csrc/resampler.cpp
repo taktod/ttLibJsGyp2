@@ -19,7 +19,7 @@ private:
   ~DummyResampler() {}
 };
 
-void CDECL Resampler::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL Resampler::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Resampler").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

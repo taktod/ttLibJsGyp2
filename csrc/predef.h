@@ -2,9 +2,9 @@
 #define CSRC_PREDEF_H
 
 #ifdef _WIN32
-# define CDECL __cdecl
+# define TTLIBJSGYP_CDECL __cdecl
 #else
-# define CDECL
+# define TTLIBJSGYP_CDECL
 #endif
 
 #endif

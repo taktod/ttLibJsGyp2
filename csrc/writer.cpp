@@ -4,7 +4,7 @@
 
 #include <string>
 
-void CDECL Writer::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL Writer::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Writer").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

@@ -4,7 +4,7 @@
 
 #include <string>
 
-void CDECL Reader::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL Reader::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Reader").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);

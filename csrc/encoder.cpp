@@ -25,7 +25,7 @@ private:
   ~DummyEncoder() {}
 };
 
-void Encoder::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL Encoder::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Encoder").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
