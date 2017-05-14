@@ -67,7 +67,7 @@ NAN_METHOD(Decoder::Decode) {
     }
     decoder->callback_ = info[1];
     info.GetReturnValue().Set(
-      decoder->decode(Frame::refFrame(info[0]->ToObject()))
+      decoder->decode(Frame::refFrame(info[0]))
     );
     return;
   }

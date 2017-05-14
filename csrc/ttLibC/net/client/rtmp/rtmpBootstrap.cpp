@@ -260,7 +260,7 @@ NAN_METHOD(RtmpBootstrap::QueueFrame) {
     info.GetReturnValue().Set(false);
   }
   uint32_t streamId = info[0]->Uint32Value();
-  ttLibC_Frame *frame = Frame::refFrame(info[1]->ToObject());
+  ttLibC_Frame *frame = Frame::refFrame(info[1]);
   switch(frame->type) {
   case frameType_h264:
     {

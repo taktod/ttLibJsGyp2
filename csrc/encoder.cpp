@@ -111,7 +111,7 @@ NAN_METHOD(Encoder::Encode) {
     }
     encoder->callback_ = info[1];
     info.GetReturnValue().Set(
-      encoder->encode(Frame::refFrame(info[0]->ToObject()))
+      encoder->encode(Frame::refFrame(info[0]))
     );
     return;
   }

@@ -183,7 +183,7 @@ NAN_METHOD(NetStream::QueueFrame) {
   NetStream* stream = Nan::ObjectWrap::Unwrap<NetStream>(info.Holder());
   if(!ttLibC_RtmpStream_addFrame(
       stream->stream_,
-      Frame::refFrame(info[0]->ToObject()))) {
+      Frame::refFrame(info[0])) {
     info.GetReturnValue().Set(false);
   }
   info.GetReturnValue().Set(Nan::New(true));

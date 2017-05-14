@@ -13,7 +13,7 @@ public:
   static Local<Object>     newInstance();
   static bool              setFrame(Local<Object> jsFrame, ttLibC_Frame *frame);
   static ttLibC_Frame_Type getFrameType(std::string name);
-  static ttLibC_Frame     *refFrame(Local<Object> jsFrame);
+  static ttLibC_Frame     *refFrame(Local<Value> jsFrame);
 private:
   static NAN_METHOD(New);
   static NAN_METHOD(GetBinaryBuffer);

@@ -85,7 +85,7 @@ NAN_METHOD(Resampler::Resample) {
     }
     resampler->callback_ = info[1];
     info.GetReturnValue().Set(
-      resampler->resample(Frame::refFrame(info[0]->ToObject()))
+      resampler->resample(Frame::refFrame(info[0]))
     );
     return;
   }

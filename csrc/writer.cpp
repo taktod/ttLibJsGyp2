@@ -48,7 +48,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_flv:
       if(ttLibC_FlvWriter_write(
           (ttLibC_FlvWriter *)writer->writer_,
-          Frame::refFrame(info[0]->ToObject()),
+          Frame::refFrame(info[0]),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);
@@ -59,7 +59,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_webm:
       if(ttLibC_MkvWriter_write(
           writer->writer_,
-          Frame::refFrame(info[0]->ToObject()),
+          Frame::refFrame(info[0]),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);
@@ -69,7 +69,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_mp4:
       if(ttLibC_Mp4Writer_write(
           writer->writer_,
-          Frame::refFrame(info[0]->ToObject()),
+          Frame::refFrame(info[0]),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);
@@ -79,7 +79,7 @@ NAN_METHOD(Writer::WriteFrame) {
     case containerType_mpegts:
       if(ttLibC_MpegtsWriter_write(
           writer->writer_,
-          Frame::refFrame(info[0]->ToObject()),
+          Frame::refFrame(info[0]),
           writeCallback,
           writer)) {
         info.GetReturnValue().Set(true);

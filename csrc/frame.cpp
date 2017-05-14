@@ -243,7 +243,12 @@ ttLibC_Frame_Type Frame::getFrameType(std::string name) {
   return frameType_unknown;
 }
 
-ttLibC_Frame *Frame::refFrame(Local<Object> jsFrame) {
+ttLibC_Frame *Frame::refFrame(Local<Value> jsVFrame) {
+  if(!jsVFrame->IsObject()) {
+    return NULL;
+  }
+  Local<Object> jsFrame = jsVFrame->ToObject();
+
   Frame *frame = Nan::ObjectWrap::Unwrap<Frame>(jsFrame);
   Local<Value> id       = Nan::Get(jsFrame, Nan::New("id").ToLocalChecked()).ToLocalChecked();
   Local<Value> pts      = Nan::Get(jsFrame, Nan::New("pts").ToLocalChecked()).ToLocalChecked();
