@@ -1,6 +1,6 @@
 var ttLibJsGyp = require("bindings")("ttLibJsGyp");
 
-module.exports = {
+var exp = {
   Frame: ttLibJsGyp.Frame,
   reader: {
     FlvReader: function() {
@@ -80,6 +80,12 @@ module.exports = {
         profile = "main";
       }
       return ttLibJsGyp.Encoder.apply(null, ["x265", {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
+    },
+    MSAacEncoder: function(sampleRate, channelNum, bitrate) {
+      return ttLibJsGyp.Encoder.apply(null, ["msAac", {sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
+    },
+    MSH264Encoder: function(encoder, width, height, bitrate) {
+      return ttLibJsGyp.Encoder.apply(null, ["msH264", {encoder: encoder, width: width, height: height, bitrate: bitrate}]);
     }
   },
   resampler: {
@@ -99,5 +105,10 @@ module.exports = {
       return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
     }
   },
+  MsSetup: ttLibJsGyp.MsSetup,
+  Loopback: ttLibJsGyp.Loopback,
   rtmp: require("./tsdist/rtmp")
 };
+exp.encoder.MSH264Encoder["listEncoders"] = ttLibJsGyp.MsH264.listEncoders;
+
+module.exports = exp;

@@ -12,6 +12,8 @@
 #include "encoder/vtCompressSession.h"
 #include "encoder/x264.h"
 #include "encoder/x265.h"
+#include "encoder/msAac.h"
+#include "encoder/msH264.h"
 
 #include <string>
 
@@ -42,6 +44,7 @@ void TTLIBJSGYP_CDECL Encoder::classInit(Local<Object> target) {
     target,
     Nan::New("Encoder").ToLocalChecked(),
     Nan::GetFunction(tpl).ToLocalChecked());
+  MSH264Encoder::classInit(target);
 }
 
 NAN_METHOD(Encoder::New) {
@@ -78,6 +81,12 @@ NAN_METHOD(Encoder::New) {
     }
     else if(type == "x265") {
       encoder = new X265Encoder(info[1]->ToObject());
+    }
+    else if(type == "msAac") {
+      encoder = new MSAacEncoder(info[1]->ToObject());
+    }
+    else if(type == "msH264") {
+      encoder = new MSH264Encoder(info[1]->ToObject());
     }
     else {
       printf("%sは未定義です。\n", type.c_str());

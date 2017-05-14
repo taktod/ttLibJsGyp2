@@ -20,7 +20,9 @@ typedef enum gypEncoderType_e {
   get_vorbis,
   get_vtCompressSession,
   get_x264,
-  get_x265
+  get_x265,
+  get_msAac,
+  get_msH264
 } gypEncoderType_e;
 
 class Encoder : public Nan::ObjectWrap {

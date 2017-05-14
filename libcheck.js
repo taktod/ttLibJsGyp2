@@ -54,6 +54,7 @@ setupX264();
 setupX265();
 //setupDaala();
 //setupFaad();
+setupWin32();
 
 function setupAvcodec() {
   if(setting["targetValue"] < 1) {
@@ -84,6 +85,7 @@ function setupAvcodec() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -143,6 +145,7 @@ function setupFaac() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -185,6 +188,7 @@ function setupJpeg() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -230,6 +234,7 @@ function setupMp3lame() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -259,6 +264,7 @@ function setupOpenh264() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -287,6 +293,7 @@ function setupOpus() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -315,6 +322,7 @@ function setupTheora() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -346,6 +354,7 @@ function setupSoundtouch() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -378,6 +387,7 @@ function setupSpeexdsp() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -413,6 +423,7 @@ function setupX264() {
     }
     break;
   case "windows":
+  case "windows_nt":
   default:
     break;
   }
@@ -444,6 +455,34 @@ function setupX265() {
     }
     break;
   case "windows":
+  case "windows_nt":
+  default:
+    break;
+  }
+}
+
+function setupWin32() {
+  if(setting["disable"].indexOf("win32") != -1) {
+    return;
+  }
+  switch(setting["os"]) {
+  case "darwin":
+  case "linux":
+    break;
+  case "windows":
+  case "windows_nt":
+    switch(target) {
+    case "defs":
+      console.log("__ENABLE_WIN32__");
+      break;
+    case "libs":
+      break;
+    case "includes":
+      break;
+    default:
+      break;
+    }
+    break;
   default:
     break;
   }
@@ -491,7 +530,8 @@ function loadSetting() {
     setting["searchPath"].push("/usr/local/include");
     setting["searchPath"].push("/usr/local/lib");
     break;
-  case "windows": // これはwindows_ntとかになるかも
+  case "windows":
+  case "windows_nt":
     break;
   default:
     break;
@@ -532,6 +572,7 @@ case "linux":
   checkLinux(target);
   break;
 case "windows":
+case "windows_nt":
   checkWindow(target);
   break;
 default:

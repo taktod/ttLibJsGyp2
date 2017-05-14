@@ -48,6 +48,8 @@
         "ttLibC/ttLibC/encoder/faacEncoder.c",
         "ttLibC/ttLibC/encoder/jpegEncoder.c",
         "ttLibC/ttLibC/encoder/mp3lameEncoder.c",
+        "ttLibC/ttLibC/encoder/msAacEncoder.cpp",
+        "ttLibC/ttLibC/encoder/msH264Encoder.cpp",
         "ttLibC/ttLibC/encoder/openh264Encoder.cpp",
         "ttLibC/ttLibC/encoder/opusEncoder.c",
         "ttLibC/ttLibC/encoder/theoraEncoder.c",
@@ -111,6 +113,8 @@
         "ttLibC/ttLibC/util/flvFrameUtil.c",
         "ttLibC/ttLibC/util/hexUtil.c",
         "ttLibC/ttLibC/util/ioUtil.c",
+        "ttLibC/ttLibC/util/mmAudioLoopbackUtil.cpp",
+        "ttLibC/ttLibC/util/msGlobalUtil.cpp",
         "ttLibC/ttLibC/util/stlListUtil.cpp",
         "ttLibC/ttLibC/util/stlMapUtil.cpp",
         "csrc/ttLibC/net/tetty/bootstrap.cpp",
@@ -146,6 +150,8 @@
         "csrc/encoder/faac.cpp",
         "csrc/encoder/jpeg.cpp",
         "csrc/encoder/mp3lame.cpp",
+        "csrc/encoder/msAac.cpp",
+        "csrc/encoder/msH264.cpp",
         "csrc/encoder/openh264.cpp",
         "csrc/encoder/opus.cpp",
         "csrc/encoder/theora.cpp",
@@ -156,7 +162,9 @@
         "csrc/resampler/audio.cpp",
         "csrc/resampler/image.cpp",
         "csrc/resampler/soundtouch.cpp",
-        "csrc/resampler/speexdsp.cpp"
+        "csrc/resampler/speexdsp.cpp",
+        "csrc/loopback.cpp",
+        "csrc/msSetup.cpp"
       ],
       "libraries": [
         '<!@(node libcheck.js libs)'
