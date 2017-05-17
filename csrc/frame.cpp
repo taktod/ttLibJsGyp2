@@ -58,131 +58,402 @@ Local<Object> Frame::newInstance() {
 }
 
 bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
+#define SetProperty(target, value) do { \
+  Nan::Set(jsFrame, Nan::New(#target).ToLocalChecked(), Nan::New(value)); \
+} while(0)
+#define SetPropertyChecked(target, value) do { \
+  Nan::Set(jsFrame, Nan::New(#target).ToLocalChecked(), Nan::New(value).ToLocalChecked()); \
+} while(0)
   // ここでframeの内容を更新したりしないといけない。
   // 内包しているFrameオブジェクトとjsFrameの内容とttFrameの内容の３つが一致していなければならない。
   // この動作はjsFrameの内容を上書きして、内部で保持しているttLibC_Frameを更新することが目的
   /*
-  type
+  type bgr yuv h264...
   width
   height
   videoType key inner info
-
   sampleRate
   sampleNum
   channelNum
-
-  frameType フレームごとに特殊な値
-  dataPos 開始位置調整
-  stride  stride調整
+  data
+  lData
+  rData
+  yData
+  uData
+  vData
+  stride
+  yStride
+  uStride
+  vStride
+  subType
   */
   // jsFrameが保持しているid timebase ptsを参照しなければならない。
   // 変更している場合は、保持しているデータが更新する。
   // とりあえずはじめは全部更新でつくっておくか
-  if(ttFrame->pts < 0xFFFFFFFFL) {
-    Nan::Set(jsFrame, Nan::New("pts").ToLocalChecked(), Nan::New((uint32_t)ttFrame->pts));
-  }
-  else {
-    Nan::Set(jsFrame, Nan::New("pts").ToLocalChecked(), Nan::New((double)ttFrame->pts));
-  }
-  Nan::Set(jsFrame, Nan::New("timebase").ToLocalChecked(), Nan::New(ttFrame->timebase));
-  Nan::Set(jsFrame, Nan::New("id").ToLocalChecked(),       Nan::New(ttFrame->id));
+  SetProperty(pts, (double)ttFrame->pts);
+  SetProperty(timebase, ttFrame->timebase);
+  SetProperty(id, ttFrame->id);
   if(ttLibC_Frame_isAudio(ttFrame)) {
     ttLibC_Audio *audio = (ttLibC_Audio *)ttFrame;
-    Nan::Set(jsFrame, Nan::New("sampleRate").ToLocalChecked(), Nan::New(audio->sample_rate));
-    Nan::Set(jsFrame, Nan::New("sampleNum").ToLocalChecked(),  Nan::New(audio->sample_num));
-    Nan::Set(jsFrame, Nan::New("channelNum").ToLocalChecked(), Nan::New(audio->channel_num));
+    SetProperty(sampleRate, audio->sample_rate);
+    SetProperty(sampleNum, audio->sample_num);
+    SetProperty(channelNum, audio->channel_num);
     switch(ttFrame->type) {
     case frameType_aac:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("aac").ToLocalChecked());
+      {
+        ttLibC_Aac *aac = (ttLibC_Aac *)audio;
+        SetPropertyChecked(type, "aac");
+        switch(aac->type) {
+        case AacType_raw:
+          SetPropertyChecked(subType, "raw");
+          break;
+        case AacType_adts:
+          SetPropertyChecked(subType, "adts");
+          break;
+        case AacType_dsi:
+          SetPropertyChecked(subType, "dsi");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     case frameType_adpcm_ima_wav:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("adpcmImaWav").ToLocalChecked());
+      SetPropertyChecked(type, "adpcmImaWav");
       break;
     case frameType_mp3:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("mp3").ToLocalChecked());
+      {
+        ttLibC_Mp3 *mp3 = (ttLibC_Mp3 *)audio;
+        SetPropertyChecked(type, "mp3");
+        switch(mp3->type) {
+        case Mp3Type_tag:
+          SetPropertyChecked(subType, "tag");
+          break;
+        case Mp3Type_id3:
+          SetPropertyChecked(subType, "id3");
+          break;
+        case Mp3Type_frame:
+          SetPropertyChecked(subType, "frame");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     case frameType_nellymoser:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("nellymoser").ToLocalChecked());
+      SetPropertyChecked(type, "nellymoser");
       break;
     case frameType_opus:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("opus").ToLocalChecked());
+      {
+        ttLibC_Opus *opus = (ttLibC_Opus *)audio;
+        SetPropertyChecked(type, "opus");
+        switch(opus->type) {
+        case OpusType_header:
+          SetPropertyChecked(subType, "header");
+          break;
+        case OpusType_comment:
+          SetPropertyChecked(subType, "comment");
+          break;
+        case OpusType_frame:
+          SetPropertyChecked(subType, "frame");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     case frameType_pcm_alaw:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("pcmAlaw").ToLocalChecked());
+      SetPropertyChecked(type, "pcmAlaw");
       break;
     case frameType_pcmF32:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("pcmF32").ToLocalChecked());
+      {
+        ttLibC_PcmF32 *pcm = (ttLibC_PcmF32 *)audio;
+        SetPropertyChecked(type, "pcmF32");
+        switch(pcm->type) {
+        case PcmF32Type_interleave:
+          SetPropertyChecked(subType, "interleave");
+          break;
+        case PcmF32Type_planar:
+          SetPropertyChecked(subType, "planar");
+        default:
+          break;
+        }
+        SetProperty(lData, 0);
+        SetProperty(lStride, pcm->l_stride);
+        SetProperty(rData, 0);
+        SetProperty(rStride, pcm->r_stride);
+      }
       break;
     case frameType_pcm_mulaw:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("pcmMulaw").ToLocalChecked());
+      SetPropertyChecked(type, "pcmMulaw");
       break;
     case frameType_pcmS16:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("pcmS16").ToLocalChecked());
+      {
+        ttLibC_PcmS16 *pcm = (ttLibC_PcmS16 *)audio;
+        SetPropertyChecked(type, "pcmS16");
+        switch(pcm->type) {
+        case PcmS16Type_bigEndian:
+          SetPropertyChecked(subType, "bigEndian");
+          break;
+        case PcmS16Type_bigEndian_planar:
+          SetPropertyChecked(subType, "bigEndianPlanar");
+          break;
+        case PcmS16Type_littleEndian:
+          SetPropertyChecked(subType, "littleEndian");
+          break;
+        case PcmS16Type_littleEndian_planar:
+          SetPropertyChecked(subType, "littleEndianPlanar");
+          break;
+        default:
+          break;
+        }
+        SetProperty(lData, 0);
+        SetProperty(lStride, pcm->l_stride);
+        SetProperty(rData, 0);
+        SetProperty(rStride, pcm->r_stride);
+      }
       break;
     case frameType_speex:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("speex").ToLocalChecked());
+      {
+        ttLibC_Speex *speex = (ttLibC_Speex *)audio;
+        SetPropertyChecked(type, "speex");
+        switch(speex->type) {
+        case SpeexType_header:
+          SetPropertyChecked(subType, "header");
+          break;
+        case SpeexType_comment:
+          SetPropertyChecked(subType, "comment");
+          break;
+        case SpeexType_frame:
+          SetPropertyChecked(subType, "frame");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     case frameType_vorbis:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("vorbis").ToLocalChecked());
+      {
+        ttLibC_Vorbis *vorbis = (ttLibC_Vorbis *)audio;
+        SetPropertyChecked(type, "vorbis");
+        switch(vorbis->type) {
+        case VorbisType_identification:
+          SetPropertyChecked(subType, "identification");
+          break;
+        case VorbisType_comment:
+          SetPropertyChecked(subType, "comment");
+          break;
+        case VorbisType_setup:
+          SetPropertyChecked(subType, "setup");
+          break;
+        case VorbisType_frame:
+          SetPropertyChecked(subType, "frame");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     default:
-      puts("不明なフレームタイプでした。");
+      ERR_PRINT("不明なフレームタイプでした。");
       return false;
     }
   }
   else if(ttLibC_Frame_isVideo(ttFrame)) {
     ttLibC_Video *video = (ttLibC_Video *)ttFrame;
-    Nan::Set(jsFrame, Nan::New("width").ToLocalChecked(),  Nan::New(video->width));
-    Nan::Set(jsFrame, Nan::New("height").ToLocalChecked(), Nan::New(video->height));
+    SetProperty(width, video->width);
+    SetProperty(height, video->height);
     switch(video->type) {
     case videoType_key:
-      Nan::Set(jsFrame, Nan::New("videoType").ToLocalChecked(), Nan::New("key").ToLocalChecked());
+      SetPropertyChecked(videoType, "key");
       break;
     case videoType_inner:
-      Nan::Set(jsFrame, Nan::New("videoType").ToLocalChecked(), Nan::New("inner").ToLocalChecked());
+      SetPropertyChecked(videoType, "inner");
       break;
     case videoType_info:
-      Nan::Set(jsFrame, Nan::New("videoType").ToLocalChecked(), Nan::New("info").ToLocalChecked());
+      SetPropertyChecked(videoType, "info");
       break;
     default:
       break;
     }
     switch(ttFrame->type) {
     case frameType_bgr:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("bgr").ToLocalChecked());
+      {
+        ttLibC_Bgr *bgr = (ttLibC_Bgr *)video;
+        SetPropertyChecked(type, "bgr");
+        switch(bgr->type) {
+        case BgrType_abgr:
+          SetPropertyChecked(subType, "abgr");
+          break;
+        case BgrType_bgr:
+          SetPropertyChecked(subType, "bgr");
+          break;
+        case BgrType_bgra:
+          SetPropertyChecked(subType, "bgra");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     case frameType_flv1:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("flv1").ToLocalChecked());
+      {
+        ttLibC_Flv1 *flv1 = (ttLibC_Flv1 *)video;
+        SetPropertyChecked(type, "flv1");
+        bool isDisposable = false;
+        switch(flv1->type) {
+        case Flv1Type_intra:
+          SetPropertyChecked(subType, "intra");
+          break;
+        case Flv1Type_inner:
+          SetPropertyChecked(subType, "inner");
+          break;
+        case Flv1Type_disposableInner:
+          SetPropertyChecked(subType, "disposableInner");
+          isDisposable = true;
+          break;
+        default:
+          break;
+        }
+        SetProperty(isDisposable, isDisposable);
+      }
       break;
     case frameType_h264:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("h264").ToLocalChecked());
+      {
+        ttLibC_H264 *h264 = (ttLibC_H264 *)video;
+        SetPropertyChecked(type, "h264");
+        switch(h264->type) {
+        case H264Type_configData:
+          SetPropertyChecked(subType, "configData");
+          break;
+        case H264Type_sliceIDR:
+          SetPropertyChecked(subType, "sliceIDR");
+          break;
+        case H264Type_slice:
+          SetPropertyChecked(subType, "slice");
+          break;
+        default:
+          break;
+        }
+        switch(h264->frame_type) {
+        case H264FrameType_P:
+          SetPropertyChecked(frameType, "P");
+          break;
+        case H264FrameType_B:
+          SetPropertyChecked(frameType, "B");
+          break;
+        case H264FrameType_I:
+          SetPropertyChecked(frameType, "I");
+          break;
+        case H264FrameType_SP:
+          SetPropertyChecked(frameType, "SP");
+          break;
+        case H264FrameType_SI:
+          SetPropertyChecked(frameType, "SI");
+          break;
+        default:
+          break;
+        }
+        SetProperty(isDisposable, h264->is_disposable);
+      }
       break;
     case frameType_h265:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("h265").ToLocalChecked());
+      {
+        ttLibC_H265 *h265 = (ttLibC_H265 *)video;
+        SetPropertyChecked(type, "h265");
+        switch(h265->type) {
+        case H265Type_configData:
+          SetPropertyChecked(subType, "configData");
+          break;
+        case H265Type_sliceIDR:
+          SetPropertyChecked(subType, "sliceIDR");
+          break;
+        case H265Type_slice:
+          SetPropertyChecked(subType, "slice");
+          break;
+        default:
+          break;
+        }
+        switch(h265->frame_type) {
+        case H265FrameType_B:
+          SetPropertyChecked(frameType, "B");
+          break;
+        case H265FrameType_P:
+          SetPropertyChecked(frameType, "P");
+          break;
+        case H265FrameType_I:
+          SetPropertyChecked(frameType, "I");
+          break;
+        default:
+          break;
+        }
+        SetProperty(isDisposable, h265->is_disposable);
+      }
       break;
     case frameType_jpeg:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("jpeg").ToLocalChecked());
+      SetPropertyChecked(type, "jpeg");
       break;
     case frameType_theora:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("theora").ToLocalChecked());
+      {
+        ttLibC_Theora *theora = (ttLibC_Theora *)video;
+        SetPropertyChecked(type, "theora");
+        switch(theora->type) {
+        case TheoraType_identificationHeaderDecodeFrame:
+          SetPropertyChecked(subType, "identification");
+          break;
+        case TheoraType_commentHeaderFrame:
+          SetPropertyChecked(subType, "comment");
+          break;
+        case TheoraType_setupHeaderFrame:
+          SetPropertyChecked(subType, "setup");
+          break;
+        case TheoraType_intraFrame:
+          SetPropertyChecked(subType, "intra");
+          break;
+        case TheoraType_innerFrame:
+          SetPropertyChecked(subType, "inner");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     case frameType_vp6:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("vp6").ToLocalChecked());
+      SetPropertyChecked(type, "vp6");
       break;
     case frameType_vp8:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("vp8").ToLocalChecked());
+      SetPropertyChecked(type, "vp8");
       break;
     case frameType_vp9:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("vp9").ToLocalChecked());
+      SetPropertyChecked(type, "vp9");
       break;
     case frameType_wmv1:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("wmv1").ToLocalChecked());
+      SetPropertyChecked(type, "wmv1");
       break;
     case frameType_wmv2:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("wmv2").ToLocalChecked());
+      SetPropertyChecked(type, "wmv2");
       break;
     case frameType_yuv420:
-      Nan::Set(jsFrame, Nan::New("type").ToLocalChecked(), Nan::New("yuv").ToLocalChecked());
+      {
+        ttLibC_Yuv420 *yuv = (ttLibC_Yuv420 *)video;
+        SetPropertyChecked(type, "yuv");
+        switch(yuv->type) {
+        case Yuv420Type_planar:
+          SetPropertyChecked(subType, "planar");
+          break;
+        case Yuv420Type_semiPlanar:
+          SetPropertyChecked(subType, "semiPlanar");
+          break;
+        case Yvu420Type_planar:
+          SetPropertyChecked(subType, "yvuPlanar");
+          break;
+        case Yvu420Type_semiPlanar:
+          SetPropertyChecked(subType, "yvuSemiPlanar");
+          break;
+        default:
+          break;
+        }
+      }
       break;
     default:
       puts("不明なフレームタイプでした。");
@@ -196,6 +467,41 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
   Frame *frame = Nan::ObjectWrap::Unwrap<Frame>(jsFrame);
   frame->frame_ = ttFrame;
   frame->isRef_ = true;
+  // ここでframe->ptr_[0 - 2]のデータについて、リンクをもっておく必要がある。
+  switch(frame->frame_->type) {
+  case frameType_pcmF32:
+    {
+      ttLibC_PcmF32 *pcm = (ttLibC_PcmF32 *)frame->frame_;
+      frame->ptr_[0] = pcm->l_data;
+      frame->ptr_[1] = pcm->r_data;
+    }
+    break;
+  case frameType_pcmS16:
+    {
+      ttLibC_PcmS16 *pcm = (ttLibC_PcmS16 *)frame->frame_;
+      frame->ptr_[0] = pcm->l_data;
+      frame->ptr_[1] = pcm->r_data;
+    }
+    break;
+  case frameType_bgr:
+    {
+      ttLibC_Bgr *bgr = (ttLibC_Bgr *)frame->frame_;
+      frame->ptr_[0] = bgr->data;
+    }
+    break;
+  case frameType_yuv420:
+    {
+      ttLibC_Yuv420 *yuv = (ttLibC_Yuv420 *)frame->frame_;
+      frame->ptr_[0] = yuv->y_data;
+      frame->ptr_[1] = yuv->u_data;
+      frame->ptr_[2] = yuv->v_data;
+    }
+    break;
+  default:
+    break;
+  }
+#undef SetProperty
+#undef SetPropertyChecked
   return true;
 }
 
@@ -273,6 +579,25 @@ ttLibC_Frame_Type Frame::getFrameType(std::string name) {
 }
 
 ttLibC_Frame *Frame::refFrame(Local<Value> jsVFrame) {
+#define GetJsFrameInt(target) do { \
+  Local<Value> Js##target = Nan::Get(jsFrame, Nan::New(#target).ToLocalChecked()).ToLocalChecked(); \
+  if(Js##target->IsNumber() || Js##target->IsUint32() || Js##target->IsInt32()) { \
+    target = Js##target->Uint32Value(); \
+  } \
+} while(0)
+#define GetJsFrameLong(target) do { \
+  Local<Value> Js##target = Nan::Get(jsFrame, Nan::New(#target).ToLocalChecked()).ToLocalChecked(); \
+  if(Js##target->IsNumber() || Js##target->IsUint32() || Js##target->IsInt32()) { \
+    target = (uint64_t)Js##target->NumberValue(); \
+  } \
+} while(0)
+// stringは使いにくいな・・・std::stringにいれてから処理する以外方法がないのか・・・
+#define GetJsFrameString(target) do { \
+  Local<Value> Js##target = Nan::Get(jsFrame, Nan::New(#target).ToLocalChecked()).ToLocalChecked(); \
+  if(Js##target->IsString()) { \
+    target = std::string(*String::Utf8Value(Js##target->ToString())); \
+  } \
+} while(0)
   if(!jsVFrame->IsObject()) {
     return NULL;
   }
@@ -282,13 +607,151 @@ ttLibC_Frame *Frame::refFrame(Local<Value> jsVFrame) {
   Local<Object> jsFrame = jsVFrame->ToObject();
 
   Frame *frame = Nan::ObjectWrap::Unwrap<Frame>(jsFrame);
-  Local<Value> id       = Nan::Get(jsFrame, Nan::New("id").ToLocalChecked()).ToLocalChecked();
-  Local<Value> pts      = Nan::Get(jsFrame, Nan::New("pts").ToLocalChecked()).ToLocalChecked();
-  Local<Value> timebase = Nan::Get(jsFrame, Nan::New("timebase").ToLocalChecked()).ToLocalChecked();
-  frame->frame_->id = id->Uint32Value();
-  frame->frame_->pts = (uint64_t)pts->NumberValue();
-  frame->frame_->timebase = timebase->Uint32Value();
+  // 以下の3つはデフォルトで必要なもの。
+  uint32_t id       = frame->frame_->id;
+  uint64_t pts      = frame->frame_->pts;
+  uint32_t timebase = frame->frame_->timebase;
+  GetJsFrameInt(id);
+  GetJsFrameLong(pts);
+  GetJsFrameInt(timebase);
+  frame->frame_->id = id;
+  frame->frame_->pts = pts;
+  frame->frame_->timebase = timebase;
   // まだまだ追加すべきデータがあるはず。strideとかdataPosとか
+  // ここの調整を実施すべき。
+  // width heightの値をjsFrameのプロパティから復元したりする予定。
+  switch(frame->frame_->type) {
+//  case frameType_aac:
+  case frameType_adpcm_ima_wav:
+//  case frameType_mp3:
+  case frameType_nellymoser:
+//  case frameType_opus:
+  case frameType_pcm_alaw:
+  case frameType_pcmF32:
+  case frameType_pcm_mulaw:
+  case frameType_pcmS16:
+//  case frameType_speex:
+//  case frameType_vorbis:
+    {
+      ttLibC_Audio *audio = (ttLibC_Audio *)frame->frame_;
+      uint32_t sampleRate = audio->sample_rate;
+      uint32_t sampleNum  = audio->sample_num;
+      uint32_t channelNum = audio->channel_num;
+      GetJsFrameInt(sampleRate);
+      GetJsFrameInt(sampleNum);
+      GetJsFrameInt(channelNum);
+      audio->sample_rate = sampleRate;
+      audio->sample_num  = sampleNum;
+      audio->channel_num = channelNum;
+      switch(frame->frame_->type) {
+      case frameType_pcmF32:
+        {
+          ttLibC_PcmF32 *pcm = (ttLibC_PcmF32 *)audio;
+          uint32_t rData = 0;
+          uint32_t lData = 0;
+          GetJsFrameInt(rData); // あくまでズレはbyte数としておく。
+          GetJsFrameInt(lData);
+          pcm->l_data = frame->ptr_[0] + lData;
+          pcm->r_data = frame->ptr_[1] + rData;
+          // strideも更新すべきか？(とりあえず使わないと思うので、しばし放置しておく)
+        }
+        break;
+      case frameType_pcmS16:
+        {
+          ttLibC_PcmS16 *pcm = (ttLibC_PcmS16 *)audio;
+          uint32_t rData = 0;
+          uint32_t lData = 0;
+          GetJsFrameInt(rData); // あくまでズレはbyte数としておく。
+          GetJsFrameInt(lData);
+          pcm->l_data = frame->ptr_[0] + lData;
+          pcm->r_data = frame->ptr_[1] + rData;
+          // strideも更新すべきか？(とりあえず使わないと思うので、しばし放置しておく)
+        }
+        break;
+      default:
+        break;
+      }
+    }
+    break;
+
+  case frameType_bgr:
+//  case frameType_flv1:
+//  case frameType_h264:
+//  case frameType_h265:
+//  case frameType_jpeg:
+//  case frameType_theora:
+  case frameType_vp6:
+//  case frameType_vp8:
+//  case frameType_vp9:
+  case frameType_wmv1:
+  case frameType_wmv2:
+  case frameType_yuv420:
+    {
+      ttLibC_Video *video = (ttLibC_Video *)frame->frame_;
+      uint32_t width  = video->width;
+      uint32_t height = video->height;
+      std::string videoType("");
+      GetJsFrameInt(width);
+      GetJsFrameInt(height);
+      GetJsFrameString(videoType);
+      video->width  = width;
+      video->height = height;
+      if(videoType == "key") {
+        video->type = videoType_key;
+      }
+      else if(videoType == "inner") {
+        video->type = videoType_inner;
+      }
+      else if(videoType == "info") {
+        video->type = videoType_info;
+      }
+      // bgr、yuvの場合はrefPointerの開始位置を変更したり、stride値を書き換えたりするかもしれない(strideは普通は変更しないか・・・)
+      switch(frame->frame_->type) {
+      case frameType_bgr:
+        {
+          ttLibC_Bgr *bgr = (ttLibC_Bgr *)video;
+          uint32_t data   = 0;
+          uint32_t stride = bgr->width_stride; // オリジナルの値に戻してやった方が幸せかね。
+          GetJsFrameInt(data);
+          GetJsFrameInt(stride);
+          bgr->data = frame->ptr_[0] + data;
+          bgr->width_stride = stride;
+        }
+        break;
+      case frameType_yuv420:
+        {
+          ttLibC_Yuv420 *yuv = (ttLibC_Yuv420 *)video;
+          uint32_t yData = 0;
+          uint32_t uData = 0;
+          uint32_t vData = 0;
+          uint32_t yStride = yuv->y_stride;
+          uint32_t uStride = yuv->u_stride;
+          uint32_t vStride = yuv->v_stride;
+          GetJsFrameInt(yData);
+          GetJsFrameInt(uData);
+          GetJsFrameInt(vData);
+          GetJsFrameInt(yStride);
+          GetJsFrameInt(uStride);
+          GetJsFrameInt(vStride);
+          yuv->y_data = frame->ptr_[0] + yData;
+          yuv->u_data = frame->ptr_[1] + uData;
+          yuv->v_data = frame->ptr_[2] + vData;
+          yuv->y_stride = yStride;
+          yuv->u_stride = uStride;
+          yuv->v_stride = vStride;
+        }
+        break;
+      default:
+        break;
+      }
+    }
+    break;
+  default:
+    break;
+  }
+#undef GetJsFrameInt
+#undef GetJsFrameLong
+#undef GetJsFrameString
   return frame->frame_;
 }
 
@@ -1044,6 +1507,9 @@ NAN_METHOD(Frame::Clone) {
 Frame::Frame() {
   frame_ = NULL;
   isRef_ = false;
+  ptr_[0] = NULL;
+  ptr_[1] = NULL;
+  ptr_[2] = NULL;
 }
 
 Frame::~Frame() {
