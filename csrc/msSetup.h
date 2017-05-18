@@ -5,6 +5,6 @@
 
 using namespace v8;
 
-void setupInit(Local<Object> target);
+void MsSetupInit(Local<Object> target);
 
 #endif

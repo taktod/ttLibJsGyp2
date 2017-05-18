@@ -47,7 +47,7 @@ static NAN_METHOD(setlocale) {
 #endif
 }
 
-void setupInit(Local<Object> target) {
+void MsSetupInit(Local<Object> target) {
   Local<Object> obj = Nan::New<Object>();
   Nan::Set(obj, Nan::New("CoInitialize").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(CoInitialize)).ToLocalChecked());
   Nan::Set(obj, Nan::New("CoUninitialize").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(CoUninitialize)).ToLocalChecked());

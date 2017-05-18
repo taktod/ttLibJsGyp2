@@ -163,7 +163,7 @@
         "csrc/resampler/image.cpp",
         "csrc/resampler/soundtouch.cpp",
         "csrc/resampler/speexdsp.cpp",
-        "csrc/loopback.cpp",
+        "csrc/msLoopback.cpp",
         "csrc/msSetup.cpp"
       ],
       "libraries": [

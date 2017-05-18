@@ -8,7 +8,7 @@ using namespace v8;
 #include "encoder.h"
 #include "resampler.h"
 #include "ttLibC/net/client/rtmp/rtmpBootstrap.h"
-#include "loopback.h"
+#include "msLoopback.h"
 #include "frame.h"
 #include "msSetup.h"
 
@@ -18,10 +18,10 @@ static NAN_MODULE_INIT(Init) {
   Decoder::classInit(target);
   Encoder::classInit(target);
   Resampler::classInit(target);
-  Loopback::classInit(target);
+  MSLoopback::classInit(target);
   Frame::classInit(target);
   RtmpBootstrap::classInit(target);
-  setupInit(target);
+  MsSetupInit(target);
 }
 
 NODE_MODULE(ttLibJsGyp, Init);

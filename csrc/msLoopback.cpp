@@ -1,10 +1,10 @@
 ﻿#include "predef.h"
-#include "loopback.h"
+#include "msLoopback.h"
 #include "frame.h"
 
 #include <string>
 
-void TTLIBJSGYP_CDECL Loopback::classInit(Local<Object> target) {
+void TTLIBJSGYP_CDECL MSLoopback::classInit(Local<Object> target) {
   Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Loopback").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -15,15 +15,15 @@ void TTLIBJSGYP_CDECL Loopback::classInit(Local<Object> target) {
   Nan::Set(func, Nan::New("listDevice").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(ListDevice)).ToLocalChecked());
   Nan::Set(
     target,
-    Nan::New("Loopback").ToLocalChecked(),
+    Nan::New("MsLoopback").ToLocalChecked(),
     func);
 }
 
-NAN_METHOD(Loopback::New) {
+NAN_METHOD(MSLoopback::New) {
 #ifdef __ENABLE_WIN32__
   if(info.IsConstructCall()) {
     // パラメーターがおかしかったら例外を投げたいところ
-    Loopback *loopback = new Loopback(info);
+    MSLoopback *loopback = new MSLoopback(info);
     loopback->Wrap(info.This());
     info.GetReturnValue().Set(info.This());
   }
@@ -41,7 +41,7 @@ NAN_METHOD(Loopback::New) {
 #endif
 }
 
-bool Loopback::getDeviceCallback(void *ptr, const char *name) {
+bool MSLoopback::getDeviceCallback(void *ptr, const char *name) {
   Local<Value> *callback_ = (Local<Value> *)ptr;
   Nan::Callback callback((*callback_).As<Function>());
   Local<Value> args[] = {
@@ -58,7 +58,7 @@ bool Loopback::getDeviceCallback(void *ptr, const char *name) {
   return false;
 }
 
-NAN_METHOD(Loopback::ListDevice) {
+NAN_METHOD(MSLoopback::ListDevice) {
 #ifdef __ENABLE_WIN32__
   // ここで文字列としてcallbackで応答しなければならないわけだが・・・
   // nodeでもcallbackにしとくか・・・
@@ -77,10 +77,10 @@ NAN_METHOD(Loopback::ListDevice) {
 #endif
 }
 
-NAN_METHOD(Loopback::QueryFrame) {
+NAN_METHOD(MSLoopback::QueryFrame) {
   bool result = false;
 #ifdef __ENABLE_WIN32__
-  Loopback *loopback = Nan::ObjectWrap::Unwrap<Loopback>(info.Holder());
+  MSLoopback *loopback = Nan::ObjectWrap::Unwrap<MSLoopback>(info.Holder());
   if(loopback != NULL) {
     loopback->callback_ = info[0];
     result = ttLibC_MmAudioLoopback_queryFrame(loopback->loopback_, captureCallback, loopback);
@@ -89,8 +89,8 @@ NAN_METHOD(Loopback::QueryFrame) {
   info.GetReturnValue().Set(result);
 }
 
-bool Loopback::captureCallback(void *ptr, ttLibC_PcmS16 *pcm) {
-  Loopback *loopback = (Loopback *)ptr;
+bool MSLoopback::captureCallback(void *ptr, ttLibC_PcmS16 *pcm) {
+  MSLoopback *loopback = (MSLoopback *)ptr;
   Nan::Callback callback(loopback->callback_.As<Function>());
   Local<Object> jsFrame = Nan::New(loopback->jsPcmFrame_);
   Frame::setFrame(jsFrame, (ttLibC_Frame *)pcm);
@@ -108,7 +108,7 @@ bool Loopback::captureCallback(void *ptr, ttLibC_PcmS16 *pcm) {
   return false;
 }
 
-Loopback::Loopback(Nan::NAN_METHOD_ARGS_TYPE info) {
+MSLoopback::MSLoopback(Nan::NAN_METHOD_ARGS_TYPE info) {
 #ifdef __ENABLE_WIN32__
   std::string locale("");
   std::string device("");
@@ -134,7 +134,7 @@ Loopback::Loopback(Nan::NAN_METHOD_ARGS_TYPE info) {
 #endif
 }
 
-Loopback::~Loopback() {
+MSLoopback::~MSLoopback() {
 #ifdef __ENABLE_WIN32__
   ttLibC_MmAudioLoopback_close(&loopback_);
   jsPcmFrame_.Reset();

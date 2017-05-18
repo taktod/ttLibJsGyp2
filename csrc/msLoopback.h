@@ -7,7 +7,7 @@
 
 using namespace v8;
 
-class Loopback : public Nan::ObjectWrap {
+class MSLoopback : public Nan::ObjectWrap {
 public:
   static void classInit(Local<Object> target);
 private:
@@ -20,8 +20,8 @@ private:
   }
   static bool getDeviceCallback(void *ptr, const char *name);
   static bool captureCallback(void *ptr, ttLibC_PcmS16 *pcm);
-  Loopback(Nan::NAN_METHOD_ARGS_TYPE info);
-  ~Loopback();
+  MSLoopback(Nan::NAN_METHOD_ARGS_TYPE info);
+  ~MSLoopback();
 
 #ifdef __ENABLE_WIN32__
   ttLibC_MmAudioLoopback *loopback_;

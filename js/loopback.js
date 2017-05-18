@@ -1,6 +1,6 @@
 var tt = require("..");
 tt.MsSetup.CoInitialize();
-var loopback = new tt.Loopback("Japanese", "スピーカー (Realtek High Definition Audio)");
+var loopback = new tt.MsLoopback("Japanese", "スピーカー (Realtek High Definition Audio)");
 
 var writer = new tt.writer.MkvWriter(1000, "pcmS16");
 var encoder = new tt.encoder.MSAacEncoder(48000, 2, 96000);

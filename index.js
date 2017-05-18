@@ -106,7 +106,7 @@ var exp = {
     }
   },
   MsSetup: ttLibJsGyp.MsSetup,
-  Loopback: ttLibJsGyp.Loopback,
+  MsLoopback: ttLibJsGyp.MsLoopback,
   rtmp: require("./tsdist/rtmp")
 };
 exp.encoder.MSH264Encoder["listEncoders"] = ttLibJsGyp.MsH264.listEncoders;
