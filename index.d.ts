@@ -1,5 +1,5 @@
 /// <reference types="node"/>
-declare module 'ttlibjsgyp' {
+declare module 'ttlibjsgyp2' {
   /**
    * Frame object
    */
