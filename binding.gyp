@@ -36,13 +36,13 @@
         "ttLibC/ttLibC/container/mp4/type/stsz.c",
         "ttLibC/ttLibC/container/mp4/type/stts.c",
         "ttLibC/ttLibC/container/mp4/type/trun.c",
-        "ttLibC/ttLibC/container/mpegts2/mpegtsPacket.c",
-        "ttLibC/ttLibC/container/mpegts2/mpegtsReader.c",
-        "ttLibC/ttLibC/container/mpegts2/mpegtsWriter.c",
-        "ttLibC/ttLibC/container/mpegts2/type/pat.c",
-        "ttLibC/ttLibC/container/mpegts2/type/pes.c",
-        "ttLibC/ttLibC/container/mpegts2/type/pmt.c",
-        "ttLibC/ttLibC/container/mpegts2/type/sdt.c",
+        "ttLibC/ttLibC/container/mpegts/mpegtsPacket.c",
+        "ttLibC/ttLibC/container/mpegts/mpegtsReader.c",
+        "ttLibC/ttLibC/container/mpegts/mpegtsWriter.c",
+        "ttLibC/ttLibC/container/mpegts/type/pat.c",
+        "ttLibC/ttLibC/container/mpegts/type/pes.c",
+        "ttLibC/ttLibC/container/mpegts/type/pmt.c",
+        "ttLibC/ttLibC/container/mpegts/type/sdt.c",
         "ttLibC/ttLibC/decoder/avcodecDecoder.c",
         "ttLibC/ttLibC/encoder/audioConverterEncoder.c",
         "ttLibC/ttLibC/encoder/faacEncoder.c",
@@ -128,6 +128,7 @@
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
         "ttLibC/",
+        "csrc/",
         "./",
         '<!@(node libcheck.js includes)'
       ]

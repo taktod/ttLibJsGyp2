@@ -9,8 +9,8 @@
 #include <ttLibC/net/client/rtmp/message/userControlMessage.h>
 #include <ttLibC/net/client/rtmp/message/acknowledgement.h>
 #include <ttLibC/net/client/rtmp/message/windowAcknowledgementSize.h>
-#include <ttLibC/log.h>
 #include <ttLibC/allocator.h>
+#include "log.h"
 
 typedef struct frameCallbackData_t {
   RtmpBootstrap *bootstrap;

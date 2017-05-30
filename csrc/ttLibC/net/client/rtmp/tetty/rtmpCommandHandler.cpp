@@ -1,10 +1,10 @@
 ﻿// コマンド系の処理用
 #include "rtmpCommandHandler.h"
 
-#include <ttLibC/log.h>
 #include <ttLibC/allocator.h>
 #include <ttLibC/net/client/rtmp/message/rtmpMessage.h>
 #include <ttLibC/net/client/rtmp/message/amf0Command.h>
+#include "log.h"
 #include <string>
 
 static tetty_errornum RtmpCommandHandler_channelActive(
