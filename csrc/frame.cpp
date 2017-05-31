@@ -996,6 +996,8 @@ NAN_METHOD(Frame::FromBinaryBuffer) {
       std::string subType = "interleave";
       uint32_t sampleRate = 0;
       uint32_t channelNum = 1;
+      GetParamInt(sampleRate);
+      GetParamInt(channelNum);
       if(sampleRate == 0) {
         ERR_PRINT("sampleRateが未設定です。pcmF32復元できません。");
         info.GetReturnValue().Set(Nan::Null());
@@ -1081,6 +1083,8 @@ NAN_METHOD(Frame::FromBinaryBuffer) {
       std::string subType = "littleEndian";
       uint32_t sampleRate = 0;
       uint32_t channelNum = 1;
+      GetParamInt(sampleRate);
+      GetParamInt(channelNum);
       if(sampleRate == 0) {
         ERR_PRINT("sampleRateが未設定です。pcmS16復元できません。");
         info.GetReturnValue().Set(Nan::Null());
