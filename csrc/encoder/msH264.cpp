@@ -73,51 +73,15 @@ bool MSH264Encoder::encode(ttLibC_Frame *frame) {
   if(encoder_ == NULL) {
     puts("encoderが準備されていません。");
   }
-/*  if(frame->type != frameType_yuv420) {
+  if(frame->type != frameType_yuv420) {
     puts("yuv420のみ処理可能です。");
     return false;
-  }*/
-  // ここで適当なyuvのイメージつくらないとだめだな。
-  uint32_t width = 320;
-  uint32_t height = 240;
-  uint32_t wh = width * height;
-  size_t size = wh + (wh >> 1);
-  uint8_t *buffer = (uint8_t *)ttLibC_malloc(size);
-  if(buffer == NULL) {
-    puts("failed to alloc buffer.");
-    return false;
   }
-  memset(buffer, 0, size);
-  ttLibC_Yuv420 *yuv = ttLibC_Yuv420_make(
-    NULL,
-    Yuv420Type_semiPlanar,
-    width,
-    height,
-    buffer,
-    size,
-    buffer,
-    wh,
-    buffer + wh,
-    wh >> 1,
-    buffer + wh + 1,
-    wh >> 1,
-    true,
-    pts_,
-    1000);
-  if(yuv == NULL) {
-    puts("failed to make yuv");
-    ttLibC_free(buffer);
-    return false;
-  }
-  yuv->inherit_super.inherit_super.is_non_copy = false;
-  ttLibC_MsH264Encoder_encode(
+  return ttLibC_MsH264Encoder_encode(
     encoder_,
-    yuv,
+    (ttLibC_Yuv420 *)frame,
     encodeCallback,
     this);
-  pts_ += 100;
-  ttLibC_Yuv420_close(&yuv);
-  return true;
 #else
   return false;
 #endif
