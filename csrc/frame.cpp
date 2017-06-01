@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include <ttLibC/allocator.h>
-#include <ttLibC/log.h>
+#include "log.h"
 #include <ttLibC/frame/audio/audio.h>
 #include <ttLibC/frame/audio/aac.h>
 #include <ttLibC/frame/audio/adpcmImaWav.h>
