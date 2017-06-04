@@ -4,8 +4,10 @@
 #include "../encoder.h"
 #include <ttLibC/frame/video/h264.h>
 #ifdef __ENABLE_WIN32__
+# include <windows.h>
 # include <ttLibC/encoder/msH264Encoder.h>
 #endif
+#include <ttLibC/util/stlListUtil.h>
 
 class MSH264Encoder : public Encoder {
 public:
@@ -19,8 +21,9 @@ private:
   ~MSH264Encoder();
 #ifdef __ENABLE_WIN32__
   ttLibC_MsH264Encoder *encoder_;
+  HANDLE hMutex_;
+  ttLibC_StlList *frameStack_;
 #endif
-  uint64_t pts_;
 };
 
 #endif

@@ -27,6 +27,7 @@ else {
   setInterval(() => {
     encoder.encode(yuvDummy, (err, frame) => {
       console.log("encodeされました。");
+      return true;
     });
     yuvDummy.pts += 100;
   }, 100);
