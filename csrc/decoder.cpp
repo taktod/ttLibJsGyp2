@@ -22,13 +22,27 @@ void TTLIBJSGYP_CDECL Decoder::classInit(Local<Object> target) {
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   SetPrototypeMethod(tpl, "decode",          Decode);
   SetPrototypeMethod(tpl, "setCodecControl", SetCodecControl);
-  constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
+  Local<Function> func = Nan::GetFunction(tpl).ToLocalChecked();
+  constructor().Reset(func);
+  Nan::Set(func, Nan::New("check").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(CheckAvailable)).ToLocalChecked());
   Nan::Set(
     target,
     Nan::New("Decoder").ToLocalChecked(),
-    Nan::GetFunction(tpl).ToLocalChecked());
+    func);
 }
 
+NAN_METHOD(Decoder::CheckAvailable) {
+  bool result = false;
+  if(info.Length() > 0) {
+    std::string type(*String::Utf8Value(info[0]->ToString()));
+    if(type == "avcodec") {
+#ifdef __ENABLE_AVCODEC__
+      result = true;
+#endif
+    }
+  }
+  info.GetReturnValue().Set(result);
+}
 NAN_METHOD(Decoder::New) {
   if(info.IsConstructCall()) {
     // ここでどのcodecの動作であるか判定しなければいけないな。

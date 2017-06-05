@@ -1,6 +1,6 @@
 var ttLibJsGyp = require("bindings")("ttLibJsGyp");
 
-var exp = {
+module.exports = {
   Frame: ttLibJsGyp.Frame,
   reader: {
     FlvReader: function() {
@@ -37,78 +37,166 @@ var exp = {
     }
   },
   decoder: {
-    AvcodecVideoDecoder: function(type, width, height) {
-      return ttLibJsGyp.Decoder.apply(null, ["avcodec", {type: type, width: width, height: height}]);
-    },
-    AvcodecAudioDecoder: function(type, sampleRate, channelNum) {
-      return ttLibJsGyp.Decoder.apply(null, ["avcodec", {type: type, sampleRate: sampleRate, channelNum: channelNum}]);
-    }
+    AvcodecVideoDecoder: (function() {
+      var name = "avcodec";
+      var decoder = function(type, width, height) {
+        return ttLibJsGyp.Decoder.apply(null, [name, {type: type, width: width, height: height}]);
+      }
+      decoder["enabled"] = ttLibJsGyp.Decoder.check(name);
+      return decoder;
+    })(),
+    AvcodecAudioDecoder: (function() {
+      var name = "avcodec";
+      var decoder = function(type, sampleRate, channelNum) {
+        return ttLibJsGyp.Decoder.apply(null, [name, {type: type, sampleRate: sampleRate, channelNum: channelNum}]);
+      }
+      decoder["enabled"] = ttLibJsGyp.Decoder.check(name);
+      return decoder;
+    })(),
   },
   encoder: {
-    AudioConverterEncoder: function(type, sampleRate, channelNum, bitrate) {
-      return ttLibJsGyp.Encoder.apply(null, ["audioConverter", {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
-    },
-    FaacEncoder: function(type, sampleRate, channelNum, bitrate) {
-      return ttLibJsGyp.Encoder.apply(null, ["faac", {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
-    },
-    Mp3lameEncoder: function(sampleRate, channelNum, quality) {
-      return ttLibJsGyp.Encoder.apply(null, ["mp3lame", {sampleRate: sampleRate, channelNum: channelNum, quality:quality}]);
-    },
-    JpegEncoder: function(width, height, quality) {
-      return ttLibJsGyp.Encoder.apply(null, ["jpeg", {width: width, height: height, quality: quality}]);
-    },
-    Openh264Encoder: function(width, height, param, spatialParamArray) {
-      return ttLibJsGyp.Encoder.apply(null, ["openh264", {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
-    },
-    OpusEncoder: function(sampleRate, channelNum, unitSampleNum) {
-      return ttLibJsGyp.Encoder.apply(null, ["opus", {sampleRate: sampleRate, channelNum: channelNum, unitSampleNum: unitSampleNum}]);
-    },
-    TheoraEncoder: function(width, height, quality, bitrate, keyFrameInterval) {
-      return ttLibJsGyp.Encoder.apply(null, ["theora", {width: width, height: height, quality: quality, bitrate: bitrate, keyFrameInterval: keyFrameInterval}]);
-    },
-    VtCompressSessionEncoder: function(type, width, height, fps=15, bitrate=320000, isBaseline=true) {
-      return ttLibJsGyp.Encoder.apply(null, ["vtCompressSession", {type: type, width: width, height: height, fps: fps, bitrate: bitrate, isBaseline: isBaseline}]);
-    },
-    X264Encoder: function(width, height, preset="", tune="", profile="", param={}) {
-      if(!profile || profile == "") {
-        profile = "baseline";
+    AudioConverterEncoder: (function() {
+      var name = "audioConverter";
+      var encoder = function(type, sampleRate, channelNum, bitrate) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
+      };
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    FaacEncoder: (function() {
+      var name = "faac";
+      var encoder = function(type, sampleRate, channelNum, bitrate) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {type: type, sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
       }
-      return ttLibJsGyp.Encoder.apply(null, ["x264", {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
-    },
-    X265Encoder: function(width, height, preset="", tune="", profile="", param={}) {
-      if(!profile || profile == "") {
-        profile = "main";
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    Mp3lameEncoder: (function() {
+      var name = "mp3lame";
+      var encoder = function(sampleRate, channelNum, quality) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {sampleRate: sampleRate, channelNum: channelNum, quality:quality}]);
       }
-      return ttLibJsGyp.Encoder.apply(null, ["x265", {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
-    },
-    MSAacEncoder: function(sampleRate, channelNum, bitrate) {
-      return ttLibJsGyp.Encoder.apply(null, ["msAac", {sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
-    },
-    MSH264Encoder: function(encoder, width, height, bitrate) {
-      return ttLibJsGyp.Encoder.apply(null, ["msH264", {encoder: encoder, width: width, height: height, bitrate: bitrate}]);
-    }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    JpegEncoder: (function() {
+      var name = "jpeg";
+      var encoder = function(width, height, quality) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {width: width, height: height, quality: quality}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    Openh264Encoder: (function() {
+      var name = "openh264";
+      var encoder = function(width, height, param, spatialParamArray) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {width: width, height: height, param: param, spatialParamArray: spatialParamArray}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    OpusEncoder: (function() {
+      var name = "opus";
+      var encoder = function(sampleRate, channelNum, unitSampleNum) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {sampleRate: sampleRate, channelNum: channelNum, unitSampleNum: unitSampleNum}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    TheoraEncoder: (function() {
+      var name = "theora";
+      var encoder = function(width, height, quality, bitrate, keyFrameInterval) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {width: width, height: height, quality: quality, bitrate: bitrate, keyFrameInterval: keyFrameInterval}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    VtCompressSessionEncoder: (function() {
+      var name = "vtCompressSession";
+      var encoder = function(type, width, height, fps=15, bitrate=320000, isBaseline=true) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {type: type, width: width, height: height, fps: fps, bitrate: bitrate, isBaseline: isBaseline}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    X264Encoder: (function() {
+      var name = "x264";
+      var encoder = function(width, height, preset="", tune="", profile="", param={}) {
+        if(!profile || profile == "") {
+          profile = "baseline";
+        }
+        return ttLibJsGyp.Encoder.apply(null, [name, {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    X265Encoder: (function() {
+      var name = "x265";
+      var encoder = function(width, height, preset="", tune="", profile="", param={}) {
+        if(!profile || profile == "") {
+          profile = "main";
+        }
+        return ttLibJsGyp.Encoder.apply(null, [name, {width: width, height: height, preset: preset, tune: tune, profile: profile, param: param}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    MSAacEncoder: (function() {
+      var name = "msAac";
+      var encoder = function(sampleRate, channelNum, bitrate) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {sampleRate: sampleRate, channelNum: channelNum, bitrate: bitrate}]);
+      }
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
+    MSH264Encoder: (function() {
+      var name = "msH264";
+      var encoder = function(encoder, width, height, bitrate) {
+        return ttLibJsGyp.Encoder.apply(null, [name, {encoder: encoder, width: width, height: height, bitrate: bitrate}]);
+      }
+      encoder["listEncoders"] = ttLibJsGyp.MsH264.listEncoders;
+      encoder["enabled"] = ttLibJsGyp.Encoder.check(name);
+      return encoder;
+    })(),
   },
   resampler: {
-    AudioResampler: function(type, subType, channelNum=0) {
-      return ttLibJsGyp.Resampler.apply(null, ["audio", {type: type, subType: subType, channelNum: channelNum}]);
-    },
-    ImageResampler: function(type, subType) {
-      return ttLibJsGyp.Resampler.apply(null, ["image", {type: type, subType: subType}]);
-    },
+    AudioResampler: (function() {
+      var name = "audio";
+      var resampler = function(type, subType, channelNum=0) {
+        return ttLibJsGyp.Resampler.apply(null, [name, {type: type, subType: subType, channelNum: channelNum}]);
+      }
+      resampler["enabled"] = ttLibJsGyp.Resampler.check(name);
+      return resampler;
+    })(),
+    ImageResampler: (function() {
+      var name = "image";
+      var resampler = function(type, subType) {
+        return ttLibJsGyp.Resampler.apply(null, [name, {type: type, subType: subType}]);
+      }
+      resampler["enabled"] = ttLibJsGyp.Resampler.check(name);
+      return resampler;
+    })(),
 /*  // imageResizerは放置しておく。とりあえずelectronで使う予定だったら、webGLでresize処理は済むし・・・
     ImageResizer: function(){
     },*/
-    SoundtouchResampler: function(sampleRate, channelNum) {
-      return ttLibJsGyp.Resampler.apply(null, ["soundtouch", {sampleRate: sampleRate, channelNum: channelNum}]);
-    },
-    SpeexdspResampler: function(channelNum, inSampleRate, outSampleRate, quality) {
-      return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
-    }
+    SoundtouchResampler: (function() {
+      var name = "soundtouch";
+      var resampler = function(sampleRate, channelNum) {
+        return ttLibJsGyp.Resampler.apply(null, ["soundtouch", {sampleRate: sampleRate, channelNum: channelNum}]);
+      }
+      resampler["enabled"] = ttLibJsGyp.Resampler.check(name);
+      return resampler;
+    })(),
+    SpeexdspResampler: (function() {
+      var name = "speexdsp";
+      var resampler = function(channelNum, inSampleRate, outSampleRate, quality) {
+        return ttLibJsGyp.Resampler.apply(null, ["speexdsp", {channelNum: channelNum, inSampleRate: inSampleRate, outSampleRate: outSampleRate, quality: quality}]);
+      }
+      resampler["enabled"] = ttLibJsGyp.Resampler.check(name);
+      return resampler;
+    })(),
   },
   MsSetup: ttLibJsGyp.MsSetup,
   MsLoopback: ttLibJsGyp.MsLoopback,
   rtmp: require("./tsdist/rtmp")
 };
-exp.encoder.MSH264Encoder["listEncoders"] = ttLibJsGyp.MsH264.listEncoders;
-
-module.exports = exp;

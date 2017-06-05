@@ -31,13 +31,38 @@ void TTLIBJSGYP_CDECL Resampler::classInit(Local<Object> target) {
   SetPrototypeMethod(tpl, "setPitch",          SetPitch);
   SetPrototypeMethod(tpl, "setPitchOctaves",   SetPitchOctaves);
   SetPrototypeMethod(tpl, "setPitchSemiTones", SetPitchSemiTones);
-  constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
+  Local<Function> func = Nan::GetFunction(tpl).ToLocalChecked();
+  constructor().Reset(func);
+  Nan::Set(func, Nan::New("check").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(CheckAvailable)).ToLocalChecked());
   Nan::Set(
     target,
     Nan::New("Resampler").ToLocalChecked(),
-    Nan::GetFunction(tpl).ToLocalChecked());
+    func);
 }
 
+NAN_METHOD(Resampler::CheckAvailable) {
+  bool result = false;
+  if(info.Length() > 0) {
+    std::string type(*String::Utf8Value(info[0]->ToString()));
+    if(type == "audio") {
+      result = true;
+    }
+    else if(type == "image") {
+      result = true;
+    }
+    else if(type == "soundtouch") {
+#ifdef __ENABLE_SOUNDTOUCH__
+      result = true;
+#endif
+    }
+    else if(type == "speexdsp") {
+#ifdef __ENABLE_SPEEXDSP__
+      result = true;
+#endif
+    }
+  }
+  info.GetReturnValue().Set(result);
+}
 NAN_METHOD(Resampler::New) {
   if(info.IsConstructCall()) {
     // ここでどのcodecの動作であるか判定しなければいけないな。

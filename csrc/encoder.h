@@ -29,6 +29,8 @@ class Encoder : public Nan::ObjectWrap {
 public:
   static void classInit(Local<Object> target);
 private:
+  static NAN_METHOD(CheckAvailable);
+
   static NAN_METHOD(New);
   static NAN_METHOD(Encode);
   static NAN_METHOD(ForceNextFrameType);

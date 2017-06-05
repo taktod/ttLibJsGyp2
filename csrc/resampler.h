@@ -18,6 +18,8 @@ class Resampler : public Nan::ObjectWrap {
 public:
   static void classInit(Local<Object> target);
 private:
+  static NAN_METHOD(CheckAvailable);
+
   static NAN_METHOD(New);
   static NAN_METHOD(Resample);
   static NAN_METHOD(SetRate);

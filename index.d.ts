@@ -263,10 +263,12 @@ declare module 'ttlibjsgyp2' {
     export class AvcodecVideoDecoder {
       constructor(type:string, width:number, height:number);
       decode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class AvcodecAudioDecoder {
       constructor(type:string, sampleRate:number, channelNum:number);
       decode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
   }
   export namespace encoder {
@@ -276,30 +278,37 @@ declare module 'ttlibjsgyp2' {
     export class AudioConverterEncoder {
       constructor(type:string, sampleRate:number, channelNum:number, bitrate:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class FaacEncoder {
       constructor(type:string, sampleRate:number, channelNum:number, bitrate:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class Mp3lameEncoder {
       constructor(sampleRate:number, channelNum:number, quality:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class JpegEncoder {
       constructor(width:number, height:number, quality:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class Openh264Encoder {
       constructor(width:number, height:number, param:{}, spatialParamArray:[{}]);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class OpusEncoder {
       constructor(sampleRate:number, channelNum:number, unitSampleNum:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class TheoraEncoder {
       constructor(width:number, height:number, quality:number, bitrate:number, keyFrameInterval:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     /**
      * osxのvideoToolboxによるh264やjpegのencode動作
@@ -307,14 +316,17 @@ declare module 'ttlibjsgyp2' {
     export class VtCompressSessionEncoder {
       constructor(type:string, width:number, height:number, fps?:number, bitrate?:number, isBaseline?:boolean);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class X264Encoder {
       constructor(width:number, height:number, preset?:string, tune?:string, profile?:string, params?:{});
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class X265Encoder {
       constructor(width:number, height:number, preset?:string, tune?:string, profile?:string, params?:{});
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     /**
      * windowsのaacEncoder
@@ -322,6 +334,7 @@ declare module 'ttlibjsgyp2' {
     export class MSAacEncoder {
       constructor(sampleRate:number, channelNum:number, bitrate:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     /**
      * windowsのh264Encoder
@@ -330,24 +343,29 @@ declare module 'ttlibjsgyp2' {
       constructor(encoder:string, width:number, height:number, bitrate:number);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
       static listEncoders(func:{(err:string, encoder:string):boolean}):boolean;
+      static enabled:boolean;
     }
   }
   export namespace resampler {
     export class AudioResampler {
       constructor(type:string, subType:string, channelNum?:number);
       resample(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class ImageResampler {
       constructor(type:string, subType:string);
       resample(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class SoundtouchResampler {
       constructor(sampleRate:number, channelNum:number);
       resample(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
     export class SpeexdspResampler {
       constructor(channelNum:number, inSampleRate:number, outSampleRate:number, quality:number);
       resample(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
+      static enabled:boolean;
     }
 /*
     export class ImageResizer {
