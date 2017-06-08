@@ -410,7 +410,7 @@ declare module 'ttlibjsgyp2' {
       play(name:string, video?:boolean, audio?:boolean):void;
       publish(name:string):void;
       setBufferLength(length:number):void;
-      queryFrame(jsFrame:Frame);
+      queueFrame(jsFrame:Frame);
       /**
        * eventにonStatusEventかonFrameCallbackをいれる
        */
