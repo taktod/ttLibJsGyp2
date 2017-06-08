@@ -27,6 +27,7 @@ private:
   static NAN_METHOD(Publish);
   static NAN_METHOD(SetBufferLength);
   static NAN_METHOD(QueueFrame);
+  static NAN_METHOD(CloseStream);
 
   static inline Nan::Persistent<Function> & constructor() {
     static Nan::Persistent<Function> my_constructor;

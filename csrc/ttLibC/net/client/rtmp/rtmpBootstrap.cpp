@@ -29,6 +29,7 @@ void TTLIBJSGYP_CDECL RtmpBootstrap::classInit(Local<Object> target) {
   SetPrototypeMethod(tpl, "publish", Publish);
   SetPrototypeMethod(tpl, "setBufferLength", SetBufferLength);
   SetPrototypeMethod(tpl, "queueFrame", QueueFrame);
+  SetPrototypeMethod(tpl, "closeStream", CloseStream);
   constructor().Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(
     target,
@@ -300,6 +301,23 @@ NAN_METHOD(RtmpBootstrap::QueueFrame) {
   default:
     break;
   }
+  info.GetReturnValue().Set(true);
+}
+
+NAN_METHOD(RtmpBootstrap::CloseStream) {
+  // streamをcloseする。
+  RtmpBootstrap *bootstrap = Nan::ObjectWrap::Unwrap<RtmpBootstrap>(info.Holder());
+  if(bootstrap == NULL) {
+    info.GetReturnValue().Set(false);
+  }
+  if(info.Length() != 1) {
+    info.GetReturnValue().Set(false);
+  }
+  uint32_t streamId = info[0]->Uint32Value();
+  ttLibC_Amf0Command *closeStream = ttLibC_Amf0Command_closeStream(streamId);
+  ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, closeStream, sizeof(ttLibC_UserControlMessage));
+  ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
+  ttLibC_Amf0Command_close(&closeStream);
   info.GetReturnValue().Set(true);
 }
 

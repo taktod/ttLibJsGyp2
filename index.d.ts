@@ -415,6 +415,7 @@ declare module 'ttlibjsgyp2' {
        * eventにonStatusEventかonFrameCallbackをいれる
        */
       on(event:string, func:{(event:any):void}|{(err:string,frameFrame):void}):void;
+      close():void;
     }
   }
 }

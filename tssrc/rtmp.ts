@@ -12,8 +12,8 @@ declare class RtmpBootstrap {
   public publish(streamId:number, name:string):void;
   public setBufferLength(streamId:number, length:number):void;
   public queueFrame(streamId:number, frame:any):void;
+  public closeStream(streamId:number):void;
 }
-
 
 export class NetConnection extends EventEmitter {
   private socket:Socket;
@@ -144,6 +144,14 @@ export class NetStream extends EventEmitter {
     }
     else {
       this.bootstrap.queueFrame(this.streamId, jsFrame);
+    }
+  }
+  public close():void {
+    if(this.streamId == -1) {
+      this.orderCache.push({order:this.bootstrap.closeStream, params:[]});
+    }
+    else {
+      this.bootstrap.closeStream(this.streamId);
     }
   }
 }

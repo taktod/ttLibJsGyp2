@@ -80,6 +80,9 @@ var NetConnection = (function (_super) {
     NetConnection.prototype.refBootstrap = function () {
         return this.bootstrap;
     };
+    NetConnection.prototype.close = function () {
+        this.socket["netStreams"] = null;
+    };
     return NetConnection;
 }(events_1.EventEmitter));
 exports.NetConnection = NetConnection;
@@ -140,6 +143,14 @@ var NetStream = (function (_super) {
         }
         else {
             this.bootstrap.queueFrame(this.streamId, jsFrame);
+        }
+    };
+    NetStream.prototype.close = function () {
+        if (this.streamId == -1) {
+            this.orderCache.push({ order: this.bootstrap.closeStream, params: [] });
+        }
+        else {
+            this.bootstrap.closeStream(this.streamId);
         }
     };
     return NetStream;
