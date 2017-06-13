@@ -410,11 +410,11 @@ declare module 'ttlibjsgyp2' {
       play(name:string, video?:boolean, audio?:boolean):void;
       publish(name:string):void;
       setBufferLength(length:number):void;
-      queueFrame(jsFrame:Frame);
+      queueFrame(jsFrame:Frame): void;
       /**
        * eventにonStatusEventかonFrameCallbackをいれる
        */
-      on(event:string, func:{(event:any):void}|{(err:string,frameFrame):void}):void;
+      on(event:string, func:{(event:any):void}|{(err:string,frame:Frame):void}):void;
       close():void;
     }
   }
