@@ -59,6 +59,10 @@ var NetConnection = (function (_super) {
             _this.bootstrap = null; // これでデストラクタが動作すると思う。
             // まぁここにくることはないだろうけど
         });
+        this.socket.on("error", function (error) {
+            // エラーが発生したときには、Connect.Failedを送ってやることにする。
+            _this.emit("onStatusEvent", { info: { code: "NetConnection.Connect.Failed" } });
+        });
         // このタイミングでbootstrapをつくって、紐づけておきます。
         // new Bootstrap(); // bootstrap_makeを実施 bootstrap_channelを実施
         var res = address.match(/rtmp.?:\/\/([^/:]+)(:([0-9]+))?\/(.*)/);
@@ -88,6 +92,9 @@ var NetStream = (function (_super) {
     function NetStream(nc) {
         var _this = _super.call(this) || this;
         _this.socket = nc.refSocket();
+        _this.socket.on("error", function () {
+            _this.socket = null;
+        });
         _this.streamId = -1;
         _this.bootstrap = nc.refBootstrap();
         _this.orderCache = [];
@@ -115,6 +122,9 @@ var NetStream = (function (_super) {
             this.orderCache.push({ order: this.bootstrap.play, params: [name, video, audio] });
         }
         else {
+            if (this.socket == null) {
+                return;
+            }
             this.bootstrap.play(this.streamId, name, video, audio);
         }
     };
@@ -123,6 +133,9 @@ var NetStream = (function (_super) {
             this.orderCache.push({ order: this.bootstrap.publish, params: [name] });
         }
         else {
+            if (this.socket == null) {
+                return;
+            }
             this.bootstrap.publish(this.streamId, name);
         }
     };
@@ -131,6 +144,9 @@ var NetStream = (function (_super) {
             this.orderCache.push({ order: this.bootstrap.setBufferLength, params: [length] });
         }
         else {
+            if (this.socket == null) {
+                return;
+            }
             this.bootstrap.setBufferLength(this.streamId, length);
         }
     };
@@ -139,6 +155,9 @@ var NetStream = (function (_super) {
             this.orderCache.push({ order: this.bootstrap.queueFrame, params: [jsFrame] });
         }
         else {
+            if (this.socket == null) {
+                return;
+            }
             this.bootstrap.queueFrame(this.streamId, jsFrame);
         }
     };
@@ -147,6 +166,9 @@ var NetStream = (function (_super) {
             this.orderCache.push({ order: this.bootstrap.closeStream, params: [] });
         }
         else {
+            if (this.socket == null) {
+                return;
+            }
             this.bootstrap.closeStream(this.streamId);
         }
     };

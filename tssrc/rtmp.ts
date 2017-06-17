@@ -60,6 +60,10 @@ export class NetConnection extends EventEmitter {
       this.bootstrap = null; // これでデストラクタが動作すると思う。
       // まぁここにくることはないだろうけど
     });
+    this.socket.on("error", (error) => {
+      // エラーが発生したときには、Connect.Failedを送ってやることにする。
+      this.emit("onStatusEvent", {info:{code:"NetConnection.Connect.Failed"}});
+    });
     // このタイミングでbootstrapをつくって、紐づけておきます。
     // new Bootstrap(); // bootstrap_makeを実施 bootstrap_channelを実施
     var res = address.match(/rtmp.?:\/\/([^/:]+)(:([0-9]+))?\/(.*)/);
@@ -92,6 +96,9 @@ export class NetStream extends EventEmitter {
   constructor(nc:NetConnection) {
     super();
     this.socket = nc.refSocket();
+    this.socket.on("error", () => {
+      this.socket = null;
+    });
     this.streamId = -1;
     this.bootstrap = nc.refBootstrap();
     this.orderCache = [];
@@ -119,6 +126,9 @@ export class NetStream extends EventEmitter {
       this.orderCache.push({order:this.bootstrap.play, params:[name, video, audio]});
     }
     else {
+      if(this.socket == null) {
+        return;
+      }
       this.bootstrap.play(this.streamId, name, video, audio);
     }
   }
@@ -127,6 +137,9 @@ export class NetStream extends EventEmitter {
       this.orderCache.push({order:this.bootstrap.publish, params:[name]});
     }
     else {
+      if(this.socket == null) {
+        return;
+      }
       this.bootstrap.publish(this.streamId, name);
     }
   }
@@ -135,6 +148,9 @@ export class NetStream extends EventEmitter {
       this.orderCache.push({order:this.bootstrap.setBufferLength, params:[length]});
     }
     else {
+      if(this.socket == null) {
+        return;
+      }
       this.bootstrap.setBufferLength(this.streamId, length);
     }
   }
@@ -143,6 +159,9 @@ export class NetStream extends EventEmitter {
       this.orderCache.push({order:this.bootstrap.queueFrame, params:[jsFrame]});
     }
     else {
+      if(this.socket == null) {
+        return;
+      }
       this.bootstrap.queueFrame(this.streamId, jsFrame);
     }
   }
@@ -151,6 +170,9 @@ export class NetStream extends EventEmitter {
       this.orderCache.push({order:this.bootstrap.closeStream, params:[]});
     }
     else {
+      if(this.socket == null) {
+        return;
+      }
       this.bootstrap.closeStream(this.streamId);
     }
   }
