@@ -296,7 +296,7 @@ declare module 'ttlibjsgyp2' {
       static enabled:boolean;
     }
     export class Openh264Encoder {
-      constructor(width:number, height:number, param:{}, spatialParamArray:[{}]);
+      constructor(width:number, height:number, param:{}, spatialParamArray:{}[]);
       encode(frame:Frame, func:{(err:string, frame:Frame):boolean}):boolean;
       static enabled:boolean;
     }
