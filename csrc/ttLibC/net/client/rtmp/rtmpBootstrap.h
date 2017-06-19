@@ -5,6 +5,14 @@
 #include <ttLibC/net/client/rtmp/message/amf0Command.h>
 #include <ttLibC/util/stlMapUtil.h>
 #include <ttLibC/util/flvFrameUtil.h>
+#include <ttLibC/container/misc.h>
+
+typedef struct ttg_frameGroup {
+  ttLibC_Frame_Type audioType;
+  ttLibC_FrameQueue *audioQueue;
+  ttLibC_Frame_Type videoType;
+  ttLibC_FrameQueue *videoQueue;
+} ttg_frameGroup;
 
 class RtmpBootstrap : public Bootstrap {
 public:
@@ -35,6 +43,7 @@ private:
   }
   Local<Value> toJsObject(ttLibC_Amf0Object *src_obj);
   static bool frameManagerCloseCallback(void *ptr, void *key, void *item);
+  static bool frameGroupCloseCallback(void *ptr, void *key, void *item);
   RtmpBootstrap(Local<Value> address, Local<Value> app);
   ~RtmpBootstrap();
 
@@ -51,7 +60,8 @@ private:
 
   // streamId -> frameManagerのmap playでのみ利用する。
   ttLibC_StlMap *streamIdFlvFrameManagerMap_;
-  // streamIdごとの再生pts、送信ptsを管理した方がいいきがしないでもない。
+  // streamId -> ttg_frameGroup
+  ttLibC_StlMap *frameGroupMap_;
 };
 
 #endif

@@ -5,6 +5,7 @@
 
 #include "tetty/rtmpClientHandler.h"
 #include "tetty/rtmpCommandHandler.h"
+#include <ttLibC/allocator.h>
 #include <ttLibC/net/client/rtmp/tetty/rtmpDecoder.h>
 #include <ttLibC/net/client/rtmp/tetty/rtmpEncoder.h>
 #include <ttLibC/net/client/rtmp/tetty/rtmpHandshake.h>
@@ -261,7 +262,28 @@ NAN_METHOD(RtmpBootstrap::QueueFrame) {
     info.GetReturnValue().Set(false);
   }
   uint32_t streamId = info[0]->Uint32Value();
+  ttg_frameGroup *group = (ttg_frameGroup *)ttLibC_StlMap_get(bootstrap->frameGroupMap_, (void *)(long)streamId);
+  if(group == NULL) {
+    // groupがない場合(新規作成の場合)
+    group = (ttg_frameGroup *)ttLibC_malloc(sizeof(ttg_frameGroup));
+    if(group == NULL) {
+      // group作成失敗、fatal
+      info.GetReturnValue().Set(false);
+      return;
+    }
+    group->audioType = frameType_unknown;
+    group->videoType = frameType_unknown;
+    group->audioQueue = ttLibC_FrameQueue_make(8, 1024);
+    group->videoQueue = ttLibC_FrameQueue_make(9, 1024);
+    ttLibC_StlMap_put(bootstrap->frameGroupMap_, (void *)(long)streamId, group);
+  }
+  // ここまできたら、groupがあるはず。
   ttLibC_Frame *frame = Frame::refFrame(info[1]);
+
+  // pts timebaseを1000に変更しておく必要がありそう
+  frame->pts = (uint64_t)(1.0 * frame->pts * 1000 / frame->timebase);
+  frame->timebase = 1000;
+
   switch(frame->type) {
   case frameType_h264:
     {
@@ -271,36 +293,137 @@ NAN_METHOD(RtmpBootstrap::QueueFrame) {
         info.GetReturnValue().Set(false);
         return;
       }
-      // make message and send.
-      ttLibC_VideoMessage *videoMessage = ttLibC_VideoMessage_addFrame(streamId, (ttLibC_Video *)frame);
-      ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, videoMessage, sizeof(ttLibC_VideoMessage));
-      ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
-      ttLibC_VideoMessage_close(&videoMessage);
-    }
-    break;
-  case frameType_aac:
-    {
-      ttLibC_AudioMessage *audioMessage = ttLibC_AudioMessage_addFrame(streamId, (ttLibC_Audio *)frame);
-      if(audioMessage != NULL) {
-        audioMessage->is_dsi_info = true;
-        ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, audioMessage, sizeof(ttLibC_AudioMessage));
-        ttLibC_AudioMessage_close(&audioMessage);
+      if(h264->type == H264Type_configData) {
+        frame->pts = 0;
+        frame->dts = 0;
       }
     }
     /* no break */
+  case frameType_flv1:
+  case frameType_vp6:
+    if(group->videoType == frameType_unknown) {
+      // 設定がない場合はvideoTypeを設定してもっておく
+      group->videoType = frame->type;
+    }
+    if(group->videoType != frame->type) {
+      info.GetReturnValue().Set(false);
+      return;
+    }
+    if(!ttLibC_FrameQueue_queue(group->videoQueue, frame)) {
+      info.GetReturnValue().Set(false);
+      return;
+    }
+    break;
+  case frameType_aac:
   case frameType_mp3:
-    {
-      ttLibC_AudioMessage *audioMessage = ttLibC_AudioMessage_addFrame(streamId, (ttLibC_Audio *)frame);
-      if(audioMessage != NULL) {
-        ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, audioMessage, sizeof(ttLibC_AudioMessage));
-        ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
-        ttLibC_AudioMessage_close(&audioMessage);
-      }
+  case frameType_nellymoser:
+  case frameType_pcm_alaw:
+  case frameType_pcm_mulaw:
+  case frameType_pcmS16:
+  case frameType_speex:
+    if(group->audioType == frameType_unknown) {
+      group->audioType = frame->type;
+    }
+    if(group->audioType != frame->type) {
+      info.GetReturnValue().Set(false);
+      return;
+    }
+    if(!ttLibC_FrameQueue_queue(group->audioQueue, frame)) {
+      info.GetReturnValue().Set(false);
+      return;
     }
     break;
   default:
-    break;
+    info.GetReturnValue().Set(false);
+    return;
   }
+
+  if(group->videoType != frameType_unknown) {
+    if(group->audioType != frameType_unknown) {
+      // audio & video
+      while(true) {
+        ttLibC_Frame *video = ttLibC_FrameQueue_ref_first(group->videoQueue);
+        ttLibC_Frame *audio = ttLibC_FrameQueue_ref_first(group->audioQueue);
+        if(video == NULL || audio == NULL) {
+          break;
+        }
+        if(video->dts == 0 && video->pts != 0) {
+          break;
+        }
+        if(video->dts > audio->pts) {
+          audio = ttLibC_FrameQueue_dequeue_first(group->audioQueue);
+          if(audio->type == frameType_aac) {
+            // aacのasi情報は全部おくっておく。red5でなぜかうまく動作しないため
+            ttLibC_AudioMessage *audioMessage = ttLibC_AudioMessage_addFrame(streamId, (ttLibC_Audio *)audio);
+            if(audioMessage != NULL) {
+              audioMessage->is_dsi_info = true;
+              ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, audioMessage, sizeof(ttLibC_AudioMessage));
+              ttLibC_AudioMessage_close(&audioMessage);
+            }
+          }
+          ttLibC_AudioMessage *audioMessage = ttLibC_AudioMessage_addFrame(streamId, (ttLibC_Audio *)audio);
+          if(audioMessage != NULL) {
+            ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, audioMessage, sizeof(ttLibC_AudioMessage));
+            ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
+            ttLibC_AudioMessage_close(&audioMessage);
+          }
+        }
+        else {
+          video = ttLibC_FrameQueue_dequeue_first(group->videoQueue);
+          ttLibC_VideoMessage *videoMessage = ttLibC_VideoMessage_addFrame(streamId, (ttLibC_Video *)video);
+          ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, videoMessage, sizeof(ttLibC_VideoMessage));
+          ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
+          ttLibC_VideoMessage_close(&videoMessage);
+        }
+      }
+    }
+    else {
+      // video only
+      while(true) {
+        ttLibC_Frame *video = ttLibC_FrameQueue_ref_first(group->videoQueue);
+        if(video == NULL) {
+          break;
+        }
+        if(video->dts == 0 && video->pts != 0) {
+          break;
+        }
+        video = ttLibC_FrameQueue_dequeue_first(group->videoQueue);
+        ttLibC_VideoMessage *videoMessage = ttLibC_VideoMessage_addFrame(streamId, (ttLibC_Video *)video);
+        ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, videoMessage, sizeof(ttLibC_VideoMessage));
+        ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
+        ttLibC_VideoMessage_close(&videoMessage);
+      }
+    }
+  }
+  else {
+    if(group->audioType != frameType_unknown) {
+      // audio only
+      while(true) {
+        ttLibC_Frame *audio = ttLibC_FrameQueue_ref_first(group->audioQueue);
+        if(audio == NULL) {
+          break;
+        }
+        audio = ttLibC_FrameQueue_dequeue_first(group->audioQueue);
+        if(audio->type == frameType_aac) {
+          // aacのasi情報は全部おくっておく。red5でなぜかうまく動作しないため
+          ttLibC_AudioMessage *audioMessage = ttLibC_AudioMessage_addFrame(streamId, (ttLibC_Audio *)audio);
+          if(audioMessage != NULL) {
+            audioMessage->is_dsi_info = true;
+            ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, audioMessage, sizeof(ttLibC_AudioMessage));
+            ttLibC_AudioMessage_close(&audioMessage);
+          }
+        }
+        ttLibC_AudioMessage *audioMessage = ttLibC_AudioMessage_addFrame(streamId, (ttLibC_Audio *)audio);
+        if(audioMessage != NULL) {
+          ttLibC_TettyBootstrap_channels_write(bootstrap->bootstrap_, audioMessage, sizeof(ttLibC_AudioMessage));
+          ttLibC_TettyBootstrap_channels_flush(bootstrap->bootstrap_);
+          ttLibC_AudioMessage_close(&audioMessage);
+        }
+      }
+    }
+  }
+  // この部分調整して、video only audio onlyとかでも動作可能にしておく。
+  // このサンプルだとvideoとaudio両方あるタイプ
   info.GetReturnValue().Set(true);
 }
 
@@ -381,6 +504,19 @@ bool RtmpBootstrap::frameManagerCloseCallback(void *ptr, void *key, void *item) 
   return true;
 }
 
+bool RtmpBootstrap::frameGroupCloseCallback(void *ptr, void *key, void *item) {
+  (void)ptr;
+  (void)key;
+  if(item != NULL) {
+    ttg_frameGroup *group = (ttg_frameGroup *)item;
+    // groupが保持しているframeQueueを解放しなければならない。
+    ttLibC_FrameQueue_close(&group->audioQueue);
+    ttLibC_FrameQueue_close(&group->videoQueue);
+    ttLibC_free(item);
+  }
+  return true;
+}
+
 RtmpBootstrap::RtmpBootstrap(Local<Value> address, Local<Value> app) : Bootstrap() {
   address_ = std::string(*String::Utf8Value(address->ToString()));
   app_ = std::string(*String::Utf8Value(app->ToString()));
@@ -403,11 +539,14 @@ RtmpBootstrap::RtmpBootstrap(Local<Value> address, Local<Value> app) : Bootstrap
   ttLibC_TettyBootstrap_pipeline_addLast(bootstrap_, clientHandler_);
 
   streamIdFlvFrameManagerMap_ = ttLibC_StlMap_make();
+  frameGroupMap_ = ttLibC_StlMap_make();
 }
 
 RtmpBootstrap::~RtmpBootstrap() {
   socket_.Reset();
   // ここですべてのstreamを解放しておく必要がある。
+  ttLibC_StlMap_forEach(frameGroupMap_, frameGroupCloseCallback, NULL);
+  ttLibC_StlMap_close(&frameGroupMap_);
   ttLibC_StlMap_forEach(streamIdFlvFrameManagerMap_, frameManagerCloseCallback, NULL);
   ttLibC_StlMap_close(&streamIdFlvFrameManagerMap_);
   // ここでpipelineのオブジェクトを解放しておかないといけない。
