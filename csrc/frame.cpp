@@ -86,6 +86,7 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
   uStride
   vStride
   subType
+  h26xType
   */
   // jsFrameが保持しているid timebase ptsを参照しなければならない。
   // 変更している場合は、保持しているデータが更新する。
@@ -93,6 +94,10 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
   SetProperty(pts, (double)ttFrame->pts);
   SetProperty(timebase, ttFrame->timebase);
   SetProperty(id, ttFrame->id);
+  SetPropertyChecked(type, "");
+  SetPropertyChecked(videoType, "");
+  SetPropertyChecked(subType, "");
+  SetPropertyChecked(h26xType, "");
   if(ttLibC_Frame_isAudio(ttFrame)) {
     ttLibC_Audio *audio = (ttLibC_Audio *)ttFrame;
     SetProperty(sampleRate, audio->sample_rate);
@@ -337,19 +342,19 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
         }
         switch(h264->frame_type) {
         case H264FrameType_P:
-          SetPropertyChecked(frameType, "P");
+          SetPropertyChecked(h26xType, "P");
           break;
         case H264FrameType_B:
-          SetPropertyChecked(frameType, "B");
+          SetPropertyChecked(h26xType, "B");
           break;
         case H264FrameType_I:
-          SetPropertyChecked(frameType, "I");
+          SetPropertyChecked(h26xType, "I");
           break;
         case H264FrameType_SP:
-          SetPropertyChecked(frameType, "SP");
+          SetPropertyChecked(h26xType, "SP");
           break;
         case H264FrameType_SI:
-          SetPropertyChecked(frameType, "SI");
+          SetPropertyChecked(h26xType, "SI");
           break;
         default:
           break;
@@ -376,13 +381,13 @@ bool Frame::setFrame(Local<Object> jsFrame, ttLibC_Frame *ttFrame) {
         }
         switch(h265->frame_type) {
         case H265FrameType_B:
-          SetPropertyChecked(frameType, "B");
+          SetPropertyChecked(h26xType, "B");
           break;
         case H265FrameType_P:
-          SetPropertyChecked(frameType, "P");
+          SetPropertyChecked(h26xType, "P");
           break;
         case H265FrameType_I:
-          SetPropertyChecked(frameType, "I");
+          SetPropertyChecked(h26xType, "I");
           break;
         default:
           break;
