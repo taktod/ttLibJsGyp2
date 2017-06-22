@@ -906,7 +906,7 @@ NAN_METHOD(Frame::FromBinaryBuffer) {
       GetParamInt(channelNum);
       GetParamInt(sampleNum);
       if(sampleRate == 0) {
-        ERR_PRINT("sampleRateが未設定です。nellymoser復元できません。");
+        ERR_PRINT("sampleRateが未設定です。adpcm_ima_wavを復元できません。");
         info.GetReturnValue().Set(Nan::Null());
         return;
       }
