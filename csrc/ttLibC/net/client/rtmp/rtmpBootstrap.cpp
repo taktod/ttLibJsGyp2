@@ -275,6 +275,7 @@ NAN_METHOD(RtmpBootstrap::QueueFrame) {
     group->videoType = frameType_unknown;
     group->audioQueue = ttLibC_FrameQueue_make(8, 1024);
     group->videoQueue = ttLibC_FrameQueue_make(9, 1024);
+    group->videoQueue->isBframe_fixed = true;
     ttLibC_StlMap_put(bootstrap->frameGroupMap_, (void *)(long)streamId, group);
   }
   // ここまできたら、groupがあるはず。
